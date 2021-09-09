@@ -1,0 +1,15 @@
+C:\Users\Block\source\repos\MundoRP\obj\Debug\MundoRP.csproj.AssemblyReference.cache
+C:\Users\Block\source\repos\MundoRP\obj\Debug\MundoRP.csproj.CoreCompileInputs.cache
+C:\Users\Block\source\repos\MundoRP\bin\Debug\MundoRP.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\MundoRP.pdb
+C:\Users\Block\source\repos\MundoRP\bin\Debug\Assembly-CSharp-firstpass.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\Assembly-CSharp.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\MySql.Data.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\Rocket.API.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\Rocket.Core.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\Rocket.Unturned.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\UnityEngine.CoreModule.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\UnityEngine.dll
+C:\Users\Block\source\repos\MundoRP\obj\Debug\MundoRP.csproj.CopyComplete
+C:\Users\Block\source\repos\MundoRP\obj\Debug\MundoRP.dll
+C:\Users\Block\source\repos\MundoRP\obj\Debug\MundoRP.pdb
