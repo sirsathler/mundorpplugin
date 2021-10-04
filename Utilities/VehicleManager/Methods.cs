@@ -18,13 +18,14 @@ namespace MundoRP
 		NotificationManager Notificator = new NotificationManager();
 		public void createTicket(Vector3 pos, Garagem gr)
 		{
-			Main.Instance.Configuration.Instance.VehicleManager_Garagens[GetGaragemID(gr)].ticketPosX = pos.x;
-			Main.Instance.Configuration.Instance.VehicleManager_Garagens[GetGaragemID(gr)].ticketPosY = pos.y;
-			Main.Instance.Configuration.Instance.VehicleManager_Garagens[GetGaragemID(gr)].ticketPosZ = pos.z;
+			int grID = GetGaragemID(gr);
+			Main.Instance.Configuration.Instance.VehicleManager_Garagens[grID].ticketPosX = pos.x;
+			Main.Instance.Configuration.Instance.VehicleManager_Garagens[grID].ticketPosY = pos.y;
+			Main.Instance.Configuration.Instance.VehicleManager_Garagens[grID].ticketPosZ = pos.z;
 
-			Main.Instance.VehicleManager_garagens[GetGaragemID(gr)].ticketPosX = pos.x;
-			Main.Instance.VehicleManager_garagens[GetGaragemID(gr)].ticketPosY = pos.y;
-			Main.Instance.VehicleManager_garagens[GetGaragemID(gr)].ticketPosZ = pos.z;
+			Main.Instance.VehicleManager_garagens[grID].ticketPosX = pos.x;
+			Main.Instance.VehicleManager_garagens[grID].ticketPosY = pos.y;
+			Main.Instance.VehicleManager_garagens[grID].ticketPosZ = pos.z;
 
 			Main.Instance.Configuration.Save();
 		}
@@ -65,7 +66,7 @@ namespace MundoRP
 			return 0;
 		}
 
-		public void giveVehicle(UnturnedPlayer player, ushort vehicle, Garagem garagem)
+		public void giveVehicle(UnturnedPlayer player, GarageVehicle gv, Garagem garagem)
 		{
 			if (Main.Instance.vehicleList.ContainsKey(player.CSteamID))
 			{
@@ -74,8 +75,13 @@ namespace MundoRP
 			}
 			try
 			{
-				player.GiveVehicle(vehicle);
-				Main.Instance.vehicleList.Add(player.CSteamID, new Vehicle(player.CSteamID, VehicleManager.vehicles[VehicleManager.vehicles.Count() - 1], DateTime.Now));
+				//SETTANDO AS CONFIGS DO VEHICLE
+				player.GiveVehicle(gv.vehicleId);
+				InteractableVehicle PlayerVehicle = VehicleManager.vehicles[VehicleManager.vehicles.Count() - 1];
+				Rocket.Core.Logging.Logger.Log(PlayerVehicle.health.ToString());
+				Rocket.Core.Logging.Logger.Log(PlayerVehicle.batteryCharge.ToString());
+				Rocket.Core.Logging.Logger.Log(PlayerVehicle.fuel.ToString());
+				Main.Instance.vehicleList.Add(player.CSteamID, new Vehicle(PlayerVehicle, gv)); //ADICIONANDO O CARRO À LISTA DE VEÍCULOS DO SERVER
 				getVehicleBySteamID(player.CSteamID).transform.position = new Vector3(garagem.x, getVehicleBySteamID(player.CSteamID).transform.position.y, garagem.z);
 				getVehicleBySteamID(player.CSteamID).transform.eulerAngles = garagem.ang;
 				VehicleManager.instance.channel.send("tellVehicleLock", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, new object[]
@@ -99,7 +105,7 @@ namespace MundoRP
 			{
 				if (id == steamID)
 				{
-					return Main.Instance.vehicleList[id].vehicle;
+					return Main.Instance.vehicleList[id].iv;
 				}
 			}
 			return null;
@@ -128,7 +134,7 @@ namespace MundoRP
 				return true;
 			}
 
-			if (vehicle.isDrowned && vehicle.transform.FindChild("Buoyancy") == null)
+			if (vehicle.isDrowned && vehicle.transform.Find("Buoyancy") == null)
 			{
 				return true;
 			}

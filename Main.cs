@@ -20,7 +20,9 @@ namespace MundoRP
         NotificationManager Notificator = new NotificationManager();
 
         //------------------ COMMON OBJECTS
-        public List<Player> PlayerList = new List<Player>(); //PLAYERLIST
+        public List<MundoPlayer> PlayerList = new List<MundoPlayer>(); //PLAYERLIST
+
+
         public DataManager Data = new DataManager(); //DATAMANAGER
         public static Main Instance;
         protected override void Load()
@@ -31,8 +33,10 @@ namespace MundoRP
 
             U.Events.OnPlayerConnected += OnPlayerConnected;
             U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
+            EffectManager.onEffectButtonClicked += Notificator.uiButtonClick;
 
-            //InvokeRepeating("ClearVehicles", 300, 300);
+            PlayerList.Clear();
+            
             Main.Instance.Configuration.Save();
 
             readData();
@@ -43,23 +47,28 @@ namespace MundoRP
 		{
             //setData();
         }
+        //BUTTONCLICK-------------------------------------------------//
+
+
 
         //ONLOG-------------------------------------------------------//
 
         private void OnPlayerConnected(UnturnedPlayer Player)
 		{
-            Instance.PlayerList.Add(dataManager.getPlayerBySteamId(Player.CSteamID));
+            MundoPlayer newplayer = dataManager.getPlayerBySteamId(Player.CSteamID);
+            Instance.PlayerList.Add(newplayer);
+            Notificator.updateHUD(newplayer);
             Rocket.Core.Logging.Logger.Log("Players online atualmente: " + Instance.PlayerList.Count.ToString());
-            foreach(Player player in Main.Instance.PlayerList)
+            foreach(MundoPlayer player in Main.Instance.PlayerList)
 			{
                 Rocket.Core.Logging.Logger.Log("Usuário: "+player.username);
-			}
+			}   
 		}
 
 		//ONDESLOG----------------------------------------------------//
 		private void OnPlayerDisconnected(UnturnedPlayer Player)
 		{
-            int playerId = getPlayerInList(Player.CSteamID.ToString());
+            int playerId = getPlayerIdInList(Player.CSteamID.ToString());
             if(playerId != -1)
 			{
                 Instance.PlayerList.RemoveAt(playerId);
@@ -177,7 +186,7 @@ namespace MundoRP
             {
                 try
                 {
-                    Rocket.Core.Logging.Logger.Log(dataManager.addPosts(po));
+                    //Rocket.Core.Logging.Logger.Log(dataManager.addPosts(po));
                 }
                 catch (Exception ex)
                 {
@@ -189,7 +198,7 @@ namespace MundoRP
             {
                 try
                 {
-                    Rocket.Core.Logging.Logger.Log(dataManager.addBusStop(po));
+                    //Rocket.Core.Logging.Logger.Log(dataManager.addBusStop(po));
                 }
                 catch (Exception ex)
                 {
@@ -200,7 +209,7 @@ namespace MundoRP
 			{
 				try
 				{
-                  Rocket.Core.Logging.Logger.Log(dataManager.addGarbage(lx));
+                  //Rocket.Core.Logging.Logger.Log(dataManager.addGarbage(lx));
                 }
                 catch (Exception ex)
 				{
@@ -211,7 +220,7 @@ namespace MundoRP
             {
                 try
                 {
-                    Rocket.Core.Logging.Logger.Log(dataManager.addDump(at));
+                    //Rocket.Core.Logging.Logger.Log(dataManager.addDump(at));
                 }
                 catch (Exception ex)
                 {
@@ -222,7 +231,7 @@ namespace MundoRP
             {
                 try
                 {
-                    Rocket.Core.Logging.Logger.Log(dataManager.addMailbox(cc));
+                    //Rocket.Core.Logging.Logger.Log(dataManager.addMailbox(cc));
                 }
                 catch (Exception ex)
                 {
@@ -260,12 +269,24 @@ namespace MundoRP
 
         // FUNÇÕES
 
-        public int getPlayerInList(string csteamid)
+        public MundoPlayer getPlayerInList(string csteamid)
 		{
             int i = 0;
             for(i=0; i <= Main.Instance.PlayerList.Count; i++)
 			{
-                if(PlayerList[i].steamid == csteamid)
+                if (PlayerList[i].steamid.ToString() == csteamid)
+				{
+                    return PlayerList[i];
+				}
+			}
+            return null;
+		}
+        public int getPlayerIdInList(string csteamid)
+		{
+            int i = 0;
+            for(i=0; i <= Main.Instance.PlayerList.Count; i++)
+			{
+                if (PlayerList[i].steamid.ToString() == csteamid)
 				{
                     return i;
 				}

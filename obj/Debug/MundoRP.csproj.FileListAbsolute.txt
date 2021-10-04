@@ -13,3 +13,16 @@ C:\Users\Block\source\repos\MundoRP\bin\Debug\UnityEngine.dll
 C:\Users\Block\source\repos\MundoRP\obj\Debug\MundoRP.csproj.CopyComplete
 C:\Users\Block\source\repos\MundoRP\obj\Debug\MundoRP.dll
 C:\Users\Block\source\repos\MundoRP\obj\Debug\MundoRP.pdb
+C:\Users\Block\source\repos\MundoRP\bin\Debug\MundoRP.dll.config
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Buffers.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Memory.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Text.Json.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Buffers.xml
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Memory.xml
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml

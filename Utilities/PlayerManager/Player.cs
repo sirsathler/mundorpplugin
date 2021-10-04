@@ -7,14 +7,16 @@ using Steamworks;
 
 namespace MundoRP
 {
-	public class Player
+	public class MundoPlayer
 	{
 		public int level, xp;
-		public string username, steamid, job;
+		public string username, job;
+		public CSteamID steamid;
 		public bool premium;
 		public float mp, rp;
+		public List<GarageVehicle> vehicleList;
 
-		public Player(string Username, string SteamId, int Level, int Xp, string Job, bool Premium, float Mp, float Rp)
+		public MundoPlayer(string Username, CSteamID SteamId, int Level, int Xp, string Job, bool Premium, float Mp, float Rp, List<GarageVehicle> vlist)
 		{
 			username = Username;
 			steamid = SteamId;
@@ -24,10 +26,7 @@ namespace MundoRP
 			premium = Premium;
 			mp = Mp;
 			rp = Rp;
-		}
-		public Player()
-		{
-
+			vehicleList = vlist;
 		}
 	}
 }

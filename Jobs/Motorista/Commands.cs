@@ -31,7 +31,7 @@ namespace MundoRP
 		public void Execute(IRocketPlayer caller, string[] command)
 		{
 			UnturnedPlayer Player = (UnturnedPlayer)caller;
-			string playerJob = Main.Instance.PlayerList[Main.Instance.getPlayerInList(Player.CSteamID.ToString())].job;
+			string playerJob = Main.Instance.getPlayerInList(Player.CSteamID.ToString()).job;
 
 			if (playerJob == "motorista")
 			{

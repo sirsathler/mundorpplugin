@@ -33,10 +33,22 @@ namespace MundoRP
 			DataManager data = new DataManager();
 			UnturnedPlayer player = (UnturnedPlayer)caller;
 			data.getPlayerBySteamId(player.CSteamID);
-			int playerId = Main.Instance.getPlayerInList(player.CSteamID.ToString());
+			MundoPlayer p = Main.Instance.getPlayerInList(player.CSteamID.ToString());
+			if (player.IsInVehicle)
+			{
+				try
+				{
+					notificator.erro(player);
+				}
+				catch (Exception ex)
+				{
+
+				}
+			}
 			try
 			{
-				notificator.alerta(player, Main.Instance.PlayerList[playerId].username);
+				notificator.GarageHUD(p, p.vehicleList);
+				player.Player.quests.askSetMarker(player.CSteamID, true, new UnityEngine.Vector3(Main.Instance.VehicleManager_garagens[0].x, Main.Instance.VehicleManager_garagens[0].y, Main.Instance.VehicleManager_garagens[0].z));
 			}
 			catch(Exception ex)
 			{

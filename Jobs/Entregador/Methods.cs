@@ -46,7 +46,7 @@ namespace MundoRP
 				VehicleManager_Methods vehicleManager_Methods = new VehicleManager_Methods();
 				EffectManager.sendUIEffect(16520, 16520, Player, false);
 				Main.Instance.Entregador_servicos.Remove(Player);
-				Main.Instance.vehicleList[Player].usable = false;
+				Main.Instance.vehicleList[Player].gv.usable = false;
 			}
 		}
 

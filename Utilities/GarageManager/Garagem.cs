@@ -56,19 +56,6 @@ namespace MundoRP
 			ang = Ang;
 			type = 1;
 		}
-		public Garagem(string Nome, float X, float Y, float Z, Vector3 Ang, ushort VehicleId, string Job) //GARAGEM PROFISSIONAL
-		{
-			nome = Nome;
-			x = X;
-			y = Y;
-			z = Z;
-			ang = Ang;
-			type = 2;
-			vehicleId = VehicleId;
-			job = Job;
-		}
-
-
 		private Garagem() { }
 	}
 }

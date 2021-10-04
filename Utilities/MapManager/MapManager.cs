@@ -36,5 +36,8 @@ namespace MundoRP
         {
             return Main.Instance.motorista_Terminais[rdn.Next(0, Main.Instance.motorista_Terminais.Count())];
         }
+
+        //======== POSITION MANAGER ==========//
+
     }
 }

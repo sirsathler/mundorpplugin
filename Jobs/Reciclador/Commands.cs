@@ -29,7 +29,7 @@ namespace MundoRP
 		{
 			UnturnedPlayer Player = (UnturnedPlayer)caller;
 			NotificationManager Notificator = new NotificationManager();
-			string playerJob = Main.Instance.PlayerList[Main.Instance.getPlayerInList(Player.CSteamID.ToString())].job;
+			string playerJob = Main.Instance.getPlayerInList(Player.CSteamID.ToString()).job;
 
 			if (playerJob == "reciclador")
 			{

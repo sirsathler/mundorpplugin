@@ -13,146 +13,15 @@ namespace MundoRP
             {
                 MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
                 sqlConn.Open();
-
-                MySqlCommand sqlCmd = new MySqlCommand("CREATE DATABASE IF NOT EXISTS mundorp; CREATE TABLE IF NOT EXISTS mundorp.players(id INT NOT NULL AUTO_INCREMENT,steamid VARCHAR(50) NOT NULL,level INT NOT NULL DEFAULT '0',xp INT NOT NULL DEFAULT '0',job VARCHAR(20) NOT NULL DEFAULT 'Desempregado', PRIMARY KEY(id));", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-                
-                sqlCmd = new MySqlCommand("CREATE TABLE IF NOT EXISTS mundorp.busstops(id INT NOT NULL AUTO_INCREMENT,name VARCHAR(50) NOT NULL,type VARCHAR(50) NOT NULL,posx FLOAT NOT NULL,posy FLOAT NOT NULL,posz FLOAT NOT NULL,PRIMARY KEY(id), UNIQUE INDEX `NAME` (`name`));", sqlConn);
-                sqlCmd.ExecuteNonQuery();   
-                
-                sqlCmd = new MySqlCommand("CREATE TABLE IF NOT EXISTS mundorp.garbages(`id` INT NOT NULL AUTO_INCREMENT,`posx` FLOAT NOT NULL,`posy` FLOAT NOT NULL,`posz` FLOAT NOT NULL,PRIMARY KEY(`id`))", sqlConn);
-                sqlCmd.ExecuteNonQuery();           
-                
-                sqlCmd = new MySqlCommand("CREATE TABLE IF NOT EXISTS mundorp.dumps(`id` INT NOT NULL AUTO_INCREMENT,`posx` FLOAT NOT NULL,`posy` FLOAT NOT NULL,`posz` FLOAT NOT NULL,PRIMARY KEY(`id`))", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-
-                sqlCmd = new MySqlCommand("CREATE TABLE IF NOT EXISTS mundorp.posts(`id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(50) NOT NULL, `posx` FLOAT NOT NULL,`posy` FLOAT NOT NULL,`posz` FLOAT NOT NULL,PRIMARY KEY(`id`), UNIQUE INDEX `NAME` (`name`))", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-
-                sqlCmd = new MySqlCommand("CREATE TABLE IF NOT EXISTS mundorp.mailbox(`id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(50) NOT NULL, `posx` FLOAT NOT NULL,`posy` FLOAT NOT NULL,`posz` FLOAT NOT NULL,PRIMARY KEY(`id`), UNIQUE INDEX `NAME` (`name`))", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-
-                sqlCmd = new MySqlCommand("CREATE TABLE IF NOT EXISTS mundorp.jobs (`id` INT NOT NULL AUTO_INCREMENT,`name` VARCHAR(50) NOT NULL,`payment` FLOAT NOT NULL,`maxLoad` INT NOT NULL,`maxPlayers` INT NOT NULL,`vehicleId` INT NOT NULL,PRIMARY KEY(`id`))", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-
                 sqlConn.Close();
-                return "MundoRP_DatabaseManagerV2 | Banco de Dados aberto com sucesso!";
+                return "MundoRP | Banco de Dados aberto com sucesso!";
             }
             catch (Exception ex)
             {
                 return ex.ToString();
             }
         }
-        public string addBusStop(PontoOnibus po)
-		{
-            
-            decimal posx = Math.Round(Convert.ToDecimal(po.x), 0);
-            decimal posy = Math.Round(Convert.ToDecimal(po.y), 0);
-            decimal posz = Math.Round(Convert.ToDecimal(po.z), 0);
-            
-			try
-			{
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
-                sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO mundorp.busstops(`name`, `type`, `posx`, `posy`, `posz`) VALUES('"+po.nome+"', '"+po.tipo+"', '"+ (float)posx+"', '"+ (float)posy +"', '"+ (float)posz +"')", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-                sqlConn.Close();
-                return "MundoRP_DatabaseManager | Parada de ônibus adicionada no banco de dados!";
-			}
-            catch(Exception ex)
-			{
-                return ex.ToString();
-			}
-
-        }
-        public string addMailbox(CaixaCorreio cx)
-        {
-
-            decimal posx = Math.Round(Convert.ToDecimal(cx.x), 0);
-            decimal posy = Math.Round(Convert.ToDecimal(cx.y), 0);
-            decimal posz = Math.Round(Convert.ToDecimal(cx.z), 0);
-
-            try
-            {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
-                sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO mundorp.mailbox(`name`, `posx`, `posy`, `posz`) VALUES('" + cx.nome + "', '" + (float)posx + "', '" + (float)posy + "', '" + (float)posz + "')", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-                sqlConn.Close();
-                return "MundoRP_DatabaseManager | Caixa de Correios adicionada no banco de dados!!";
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
-            }
-
-        }
-        public string addPosts(Poste po)
-        {
-
-            decimal posx = Math.Round(Convert.ToDecimal(po.x), 0);
-            decimal posy = Math.Round(Convert.ToDecimal(po.y), 0);
-            decimal posz = Math.Round(Convert.ToDecimal(po.z), 0);
-
-            try
-            {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
-                sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO mundorp.posts(`name`, `posx`, `posy`, `posz`) VALUES('" + po.nome + "', '" + (float)posx + "', '" + (float)posy + "', '" + (float)posz + "')", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-                sqlConn.Close();
-                return "MundoRP_DatabaseManager | Poste adicionado no banco de dados!";
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
-            }
-
-        }
-        public string addDump(Aterro at)
-        {
-
-            decimal posx = Math.Round(Convert.ToDecimal(at.x), 0);
-            decimal posy = Math.Round(Convert.ToDecimal(at.y), 0);
-            decimal posz = Math.Round(Convert.ToDecimal(at.z), 0);
-
-            try
-            {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
-                sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO mundorp.dumps(`id`, `posx`, `posy`, `posz`) VALUES('" + at.id + "', '" + (float)posx + "', '" + (float)posy + "', '" + (float)posz + "')", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-                sqlConn.Close();
-                return "MundoRP_DatabaseManager | Aterro Sanitário adicionado no banco de dados!";
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
-            }
-
-        }
-        public string addGarbage(LataDeLixo lx)
-		{
-            
-            decimal posx = Math.Round(Convert.ToDecimal(lx.x), 0);
-            decimal posy = Math.Round(Convert.ToDecimal(lx.y), 0);
-            decimal posz = Math.Round(Convert.ToDecimal(lx.z), 0);
-            
-			try
-			{                
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
-                sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO mundorp.garbages(`id`, `posx`, `posy`, `posz`) VALUES('"+lx.id+"', '"+ (float)posx+"', '"+ (float)posy +"', '"+ (float)posz +"')", sqlConn);
-                sqlCmd.ExecuteNonQuery();
-                sqlConn.Close();
-                return "MundoRP_DatabaseManager | Lata de lixo adicionada ao banco de dados!";
-			}
-            catch(Exception ex)
-			{
-                return ex.ToString();
-			}
-        }
-        public string truncateTable(string table)
+        public void truncateTable(string table)
         {
             try
             {
@@ -161,11 +30,11 @@ namespace MundoRP
                 MySqlCommand sqlCmd = new MySqlCommand("TRUNCATE mundorp."+table, sqlConn);
                 sqlCmd.ExecuteNonQuery();
                 sqlConn.Close();
-                return "MundoRP_DatabaseManager | Tabela "+table+" esvaziada!";
+                return;
             }
             catch (Exception ex)
             {
-                return ex.ToString();
+                Rocket.Core.Logging.Logger.Log(ex.ToString());
             }
         }
         public int count(string table)
@@ -189,7 +58,9 @@ namespace MundoRP
             }
         }
 
-        public Player getPlayerBySteamId(Steamworks.CSteamID id)
+        //GETTERS====================================================================================================================
+
+        public MundoPlayer getPlayerBySteamId(Steamworks.CSteamID id)
         {
             try
             {
@@ -199,32 +70,57 @@ namespace MundoRP
                 sqlCmd.CommandType = System.Data.CommandType.Text;
                 MySqlDataReader dr = sqlCmd.ExecuteReader();
                 dr.Read();
-                
                 //CRIANDO NOVO OBJETO USUÁRIO=====================
-                string username, steamid, job;
-                int level, xp;
                 bool premium = false;
-                float mp, rp;
-
-                username = dr.GetString(0);
-                steamid = dr.GetString(1);
-                job = dr.GetString(4);
-                level = Convert.ToInt32(dr.GetString(2));
-                xp = Convert.ToInt32(dr.GetString(3));
-
-                if (Convert.ToDateTime(dr.GetString(5)) > DateTime.Now)
-                {
-                    premium = true;
-                }
-                mp = (float)Convert.ToDouble(dr.GetString(6));
-                rp = (float)Convert.ToDouble(dr.GetString(7));
-                Player player = new Player(username, steamid, level, xp, job, premium, rp, mp);
-
+                premium = Convert.ToDateTime(dr.GetString(5)) > DateTime.Now ? true : false;
+                List<GarageVehicle> garageVehicles = getVehiclesBySteamId(id);
+                MundoPlayer player = new MundoPlayer(dr.GetString(0), id, Convert.ToInt32(dr.GetString(2)), Convert.ToInt32(dr.GetString(3)), dr.GetString(4), premium, (float)Convert.ToDouble(dr.GetString(7)), (float)Convert.ToDouble(dr.GetString(6)), garageVehicles);
                 sqlConn.Close();  // FECHANDO A CONEXÃO COM O BANCO
+                
                 return player;
 
             }
             catch(Exception ex)
+            {
+                Rocket.Core.Logging.Logger.Log(ex.ToString());
+                return null;
+            }
+        }
+
+        public List<GarageVehicle> getVehiclesBySteamId(Steamworks.CSteamID id)
+		{
+            //GETTING PLAYER CARS
+            List<GarageVehicle> playerVehicles = new List<GarageVehicle>();
+            try
+            {
+                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+                sqlConn.Open();
+
+                MySqlCommand sqlCmd = new MySqlCommand("SELECT Vehicle_uId, Vehicle_Battery, Vehicle_Health, Vehicle_Fuel, Vehicle_Name " +
+                    "FROM mundorp.players" +
+                    "INNER JOIN mundorp.vehicles" +
+                    "INNER JOIN mundorp.vehiclesdata" +
+                    "ON mundorp.vehicles.Vehicle_uniqueId = mundorp.vehiclesdata.Vehicle_uId" +
+                    "WHERE mundorp.vehicles.Vehicle_OwnerId ="+ id.ToString() +
+                    "AND mundorp.players.steamid =" + id.ToString(), sqlConn);
+
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                MySqlDataReader dr = sqlCmd.ExecuteReader();
+                int i = 0;
+                while (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        playerVehicles.Add(new GarageVehicle(id.ToString(), Convert.ToUInt16(dr.GetString(0)), DateTime.Now, 100, Convert.ToUInt16(dr.GetString(1)), Convert.ToUInt16(dr.GetString(2)), dr.GetString(3)));
+                        Rocket.Core.Logging.Logger.Log("Adicionado veículo: " + playerVehicles[i].vname);
+                    }
+                    dr.NextResult();
+                    i++;
+                }
+                sqlConn.Close();
+                return playerVehicles;
+            }
+            catch (Exception ex)
             {
                 Rocket.Core.Logging.Logger.Log(ex.ToString());
                 return null;
@@ -401,6 +297,21 @@ namespace MundoRP
                 return null;
             }
         }
+
+
+
+        //SETTERS====================================================================================================================
+        public bool addToDB(MundoPlayer player)
+		{
+            MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+            sqlConn.Open();
+            MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO mundorp.players (steamid, level, xp, job, mp, rp) VALUES (" + player.steamid + ", " + player.level + ", " + player.xp + ", " + player.job + ", " + player.mp + ", " + player.rp + " ON DUPLICATE KEY UPDATE ", sqlConn);
+            sqlCmd.CommandType = System.Data.CommandType.Text;
+            sqlCmd.ExecuteNonQuery();
+            sqlConn.Close();
+            return false;
+		}
+
         public string updateById(string table, string column, int id, int valor)
         {
             try
@@ -419,9 +330,4 @@ namespace MundoRP
             }
         }
     }
-}
-
-public class PlayerResponse
-{
-    
 }

@@ -83,33 +83,6 @@ namespace MundoRP
 						Notificator.sucesso(Player, "Garagem Pessoal " + command[1] + " Criada!");
 						return;
 					}
-
-					else if (command.Length == 4)
-					{
-						foreach (Garagem gr in Main.Instance.VehicleManager_garagens)
-						{
-							if (gr.nome == command[1])
-							{
-								Notificator.erro(Player, "Já existe uma garagem com esse nome!");
-								return;
-							}
-							if (Vector3.Distance(new Vector3(gr.x, gr.y, gr.z), new Vector3(Player.Position.x, Player.Position.y, Player.Position.z)) < 5)
-							{
-								Notificator.erro(Player, "Muito próximo de outra garagem!");
-								return;
-							}
-						}
-						try
-						{
-							vehicle_Methods.criarGaragem(new Garagem(command[1], Player.Position.x, Player.Position.y, Player.Position.z, Player.Player.transform.rotation.eulerAngles, Convert.ToUInt16(command[2]), command[3].ToString())); ;
-							Notificator.sucesso(Player, "Garagem Profissional " + command[1] + " Criada!");
-							return;
-						}
-						catch (Exception ex)
-						{
-							Rocket.Core.Logging.Logger.Log(ex);
-						}
-					}
 					else
 					{
 						Notificator.erro(Player, "Erro de sintaxe!");

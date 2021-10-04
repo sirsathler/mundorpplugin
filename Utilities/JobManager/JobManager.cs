@@ -34,7 +34,7 @@ namespace MundoRP
 			UnturnedPlayer Player = (UnturnedPlayer)caller;
 			NotificationManager Notificator = new NotificationManager();
 			MapManager mapManager = new MapManager();
-			string playerJob = Main.Instance.PlayerList[Main.Instance.getPlayerInList(Player.CSteamID.ToString())].job;
+			string playerJob = Main.Instance.getPlayerInList(Player.CSteamID.ToString()).job;
 
 			//ELETRICISTA======================================================================//
 			if (playerJob == "reciclador")
@@ -108,9 +108,9 @@ namespace MundoRP
 						Notificator.erro(Player, "você já está em um serviço!");
 						return;
 					}
-					if (Player.IsInVehicle && Player.CurrentVehicle.id == Main.Instance.Configuration.Instance.Entregador_Carro && Player.CurrentVehicle.instanceID == Main.Instance.vehicleList[Player.CSteamID].vehicle.instanceID)
+					if (Player.IsInVehicle && Player.CurrentVehicle.id == Main.Instance.Configuration.Instance.Entregador_Carro && Player.CurrentVehicle.instanceID == Main.Instance.vehicleList[Player.CSteamID].iv.instanceID)
 					{
-						if (Main.Instance.vehicleList[Player.CSteamID].usable)
+						if (Main.Instance.vehicleList[Player.CSteamID].gv.usable)
 						{
 							try
 							{
@@ -156,9 +156,9 @@ namespace MundoRP
 					}
 					try
 					{
-						if (Player.IsInVehicle && Player.CurrentVehicle.id == Main.Instance.Configuration.Instance.Motorista_Carro && Player.CurrentVehicle.instanceID == Main.Instance.vehicleList[Player.CSteamID].vehicle.instanceID)
+						if (Player.IsInVehicle && Player.CurrentVehicle.id == Main.Instance.Configuration.Instance.Motorista_Carro && Player.CurrentVehicle.instanceID == Main.Instance.vehicleList[Player.CSteamID].iv.instanceID)
 						{
-							if (Main.Instance.vehicleList[Player.CSteamID].usable)
+							if (Main.Instance.vehicleList[Player.CSteamID].gv.usable)
 							{
 								List<PontoOnibus> terminais = new List<PontoOnibus>();
 								Main.Instance.motorista_servicos.Add(Player.CSteamID, new List<PontoOnibus>());

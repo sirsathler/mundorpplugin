@@ -31,7 +31,7 @@ namespace MundoRP
 		public void Execute(IRocketPlayer caller, string[] command)
 		{
 			UnturnedPlayer Player = (UnturnedPlayer)caller;
-			string playerJob = Main.Instance.PlayerList[Main.Instance.getPlayerInList(Player.CSteamID.ToString())].job;
+			string playerJob = Main.Instance.getPlayerInList(Player.CSteamID.ToString()).job;
 
 			if (playerJob == "entregador")
 			{
@@ -40,7 +40,7 @@ namespace MundoRP
 					CaixaCorreio cx = Main.Instance.Entregador_servicos[Player.CSteamID][0];
 					if (Vector3.Distance(new Vector3(cx.x, cx.y, cx.z), Player.Position) < Main.Instance.Configuration.Instance.Entregador_Range)
 					{
-						if (Main.Instance.vehicleList[Player.CSteamID].vehicle.sirensOn)
+						if (Main.Instance.vehicleList[Player.CSteamID].iv.sirensOn)
 						{
 							//Main.Instance.Eletricista_servicos.Remove(Player.CSteamID);
 							Notificator.sucesso(UnturnedPlayer.FromCSteamID(Player.CSteamID), "Correspondência entregada! Vá para a próxima!");
