@@ -1,7 +1,7 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
-
+using SDG.Unturned;
 
 namespace MundoRP
 {
@@ -315,9 +315,18 @@ namespace MundoRP
 
 
         //SETTERS====================================================================================================================
+        public bool updateCar(InteractableVehicle vh, int id)
+		{
+            sqlConn.Open();
+            MySqlCommand sqlCmd = new MySqlCommand("UPDATE vehicles SET Vehicle_Battery ="+vh.batteryCharge+", Vehicle_Health ="+vh.health+", Vehicle_Fuel ="+vh.fuel+" WHERE Vehicle_Id ="+id, sqlConn);
+            sqlCmd.CommandType = System.Data.CommandType.Text;
+            sqlCmd.ExecuteNonQuery();
+            sqlConn.Close();
+            return false;
+        }
+
         public bool addToDB(MundoPlayer player)
 		{
-            MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
             sqlConn.Open();
             MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO mundorp.players (steamid, level, xp, job, mp, rp) VALUES (" + player.steamid + ", " + player.level + ", " + player.xp + ", " + player.job + ", " + player.mp + ", " + player.rp + " ON DUPLICATE KEY UPDATE ", sqlConn);
             sqlCmd.CommandType = System.Data.CommandType.Text;

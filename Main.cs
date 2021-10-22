@@ -254,7 +254,7 @@ namespace MundoRP
 
             Main.Instance.Reciclador_latasdelixo = dataManager.getGarbagesFromDB();
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Reciclador_latasdelixo.Count.ToString() + " Latas de Lixos.");
-            /*
+            
             Main.Instance.Eletricista_postes = dataManager.getPostsFromDB();
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Eletricista_postes.Count.ToString() + " Postes.");
             
@@ -269,7 +269,7 @@ namespace MundoRP
 
             Main.Instance.motorista_PontosOnibus = dataManager.getBusstopsFromDB("terminal");
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Reciclador_aterros.Count.ToString() + " Terminal.");
-            */
+            
         }
 
         // FUNÇÕES
