@@ -14,6 +14,7 @@ namespace MundoRP
 		public CSteamID steamid;
 		public bool premium;
 		public float mp, rp;
+		public int actualCar;
 		public List<GarageVehicle> vehicleList;
 
 		public MundoPlayer(string Username, CSteamID SteamId, int Level, int Xp, string Job, bool Premium, float Mp, float Rp, List<GarageVehicle> vlist)
@@ -27,6 +28,7 @@ namespace MundoRP
 			mp = Mp;
 			rp = Rp;
 			vehicleList = vlist;
+			actualCar = 0;
 		}
 	}
 }

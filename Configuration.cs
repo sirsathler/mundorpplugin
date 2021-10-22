@@ -7,6 +7,10 @@ namespace MundoRP
 {
 	public class Configuration : IRocketPluginConfiguration
 	{
+		// GARAGE ============================================================= //
+		[XmlElement(ElementName = "GarageBeacon_Range")]
+		public float GarageBeacon_Range;
+
 		// VEHICLEMANAGER ============================================================= //
 		[XmlElement(ElementName = "VehicleManager_MinRange")]
 		public float VehicleManager_MinRange;
@@ -15,7 +19,7 @@ namespace MundoRP
 		public double VehicleManager_Cooldown;
 
 		[XmlArray(ElementName = "VehicleManager_Garagens")]
-		public List<Garagem> VehicleManager_Garagens = new List<Garagem>() { };
+		public List<Garage> VehicleManager_Garagens = new List<Garage>() { };
 
 		// MOTORISTA ================================================================== //
 		[XmlElement(ElementName = "Motorista_MinRange")]
@@ -59,7 +63,9 @@ namespace MundoRP
 
 		public void LoadDefaults()
 		{
-			//MAPMANAGER
+			//MODALBEACON
+			GarageBeacon_Range = 4;
+
 
 			//VEHICLEMANAGER
 			VehicleManager_MinRange = 4;

@@ -38,7 +38,7 @@ namespace MundoRP
 				{
 					if (command.Length == 2)
 					{
-						foreach (Garagem gr in Main.Instance.VehicleManager_garagens)
+						foreach (Garage gr in Main.Instance.VehicleManager_garagens)
 						{
 							if (gr.nome == command[1])
 							{
@@ -47,7 +47,7 @@ namespace MundoRP
 									Main.Instance.VehicleManager_garagens.Remove(gr);
 									Main.Instance.Configuration.Instance.VehicleManager_Garagens.Remove(gr);
 									Main.Instance.Configuration.Save();
-									Notificator.sucesso(Player, "Garagem " + gr.nome + " removida com sucesso!");
+									Notificator.sucesso(Player, "Garage " + gr.nome + " removida com sucesso!");
 									return;
 								}
 								catch (Exception ex)
@@ -64,9 +64,9 @@ namespace MundoRP
 
 				else if (command[0] == "c-garagem" || command[0] == "+ga")
 				{
-					if (command.Length == 3)
+					if (command.Length == 2)
 					{
-						foreach (Garagem gr in Main.Instance.VehicleManager_garagens)
+						foreach (Garage gr in Main.Instance.VehicleManager_garagens)
 						{
 							if (gr.nome == command[1])
 							{
@@ -79,75 +79,14 @@ namespace MundoRP
 								return;
 							}
 						}
-						vehicle_Methods.criarGaragem(new Garagem(command[1], Player.Position.x, Player.Position.y, Player.Position.z, Player.Player.transform.rotation.eulerAngles));
-						Notificator.sucesso(Player, "Garagem Pessoal " + command[1] + " Criada!");
+						vehicle_Methods.criarGarage(new Garage(command[1], Player.Position.x, Player.Position.y, Player.Position.z, Player.Player.transform.rotation.eulerAngles));
+						Notificator.sucesso(Player, "Garagem " + command[1] + " Criada!");
 						return;
 					}
 					else
 					{
 						Notificator.erro(Player, "Erro de sintaxe!");
 						return;
-					}
-				}
-
-				else if (command[0] == "c-ticket" || command[0] == "+ti")
-				{
-					if (command.Length == 2)
-					{
-						foreach (Garagem gr in Main.Instance.VehicleManager_garagens)
-						{
-							if (Vector3.Distance(new Vector3(gr.ticketPosX, gr.ticketPosY, gr.ticketPosZ), new Vector3(Player.Position.x, Player.Position.y, Player.Position.z)) < 5)
-							{
-								Notificator.erro(Player, "Muito próximo de outro ticket!");
-								return;
-							}
-						}
-						foreach (Garagem gr in Main.Instance.VehicleManager_garagens)
-						{
-							if (gr.nome == command[1])
-							{
-								try
-								{
-									Notificator.alerta(Player, "Alterado o ticket " + gr.nome);
-									vehicle_Methods.createTicket(Player.Position, gr);
-									return;
-								}
-								catch (Exception ex)
-								{
-									Notificator.erro(Player);
-									Rocket.Core.Logging.Logger.Log(ex);
-									return;
-								}
-							}
-						}
-						Notificator.erro(Player, "Garagem nao encontrada!");
-						return;
-					}
-					else
-					{
-						Notificator.erro(Player, "Erro de sintaxe!");
-					}
-				}
-
-				else if (command[0] == "d-ticket" || command[0] == "-ti")
-				{
-					if (command.Length == 2)
-					{
-						foreach (Garagem gr in Main.Instance.VehicleManager_garagens)
-						{
-							if (Vector3.Distance(new Vector3(gr.ticketPosX, gr.ticketPosY, gr.ticketPosZ), new Vector3(Player.Position.x, Player.Position.y, Player.Position.z)) < 5)
-							{
-								gr.ticketPosX = 0;
-								gr.ticketPosY = 0;
-								gr.ticketPosZ = 0;
-								Notificator.alerta(Player, "Removido o ticket da garagem " + gr.nome);
-								return;
-							}
-						}
-					}
-					else
-					{
-						Notificator.erro(Player, "Não existe nenhum ticket próximo!");
 					}
 				}
 
@@ -262,24 +201,17 @@ namespace MundoRP
 					PontoOnibus pon;
 					if (command.Length > 1 && (command[2] == "terminal" || command[2] == "+te"))
 					{
-						pon = new PontoOnibus(command[1].ToString(), "terminal".ToString(), Player.Position.x, Player.Position.y, Player.Position.z);
+						pon = new PontoOnibus(command[1].ToString(), Player.Position.x, Player.Position.y, Player.Position.z);
 						Main.Instance.motorista_Terminais.Add(pon);
 					}
 					else
 					{
-						pon = new PontoOnibus(command[1].ToString(), "parada".ToString(), Player.Position.x, Player.Position.y, Player.Position.z);
+						pon = new PontoOnibus(command[1].ToString(), Player.Position.x, Player.Position.y, Player.Position.z);
 					}
 					try
 					{
 						Main.Instance.motorista_PontosOnibus.Add(pon);
-						if(pon.tipo == "terminal")
-						{
-							Notificator.sucesso(Player, "terminal criado com sucesso!");
-						}
-						else
-						{
-							Notificator.sucesso(Player, "ponto criado com sucesso!");
-						}
+						Notificator.sucesso(Player, "ponto criado com sucesso!");
 						return;
 					}
 					catch (Exception ex)

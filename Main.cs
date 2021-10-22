@@ -15,28 +15,26 @@ using UnityEngine;
 
 namespace MundoRP
 {
-    public class Main : RocketPlugin<Configuration>
+    public partial class Main : RocketPlugin<Configuration>
     {
         NotificationManager Notificator = new NotificationManager();
 
         //------------------ COMMON OBJECTS
         public List<MundoPlayer> PlayerList = new List<MundoPlayer>(); //PLAYERLIST
-
-
+        public Dictionary<UnturnedPlayer, ModalBeacon> ModalOpenedPlayers = new Dictionary<UnturnedPlayer, ModalBeacon>();
+        VehicleManager_Methods vmMethods = new VehicleManager_Methods();
         public DataManager Data = new DataManager(); //DATAMANAGER
         public static Main Instance;
         protected override void Load()
         {
+            ModalOpenedPlayers.Clear();
             Instance = this;
-
-            Rocket.Core.Logging.Logger.Log(Data.openDB());
-
             U.Events.OnPlayerConnected += OnPlayerConnected;
             U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
             EffectManager.onEffectButtonClicked += Notificator.uiButtonClick;
 
             PlayerList.Clear();
-            
+
             Main.Instance.Configuration.Save();
 
             readData();
@@ -48,8 +46,6 @@ namespace MundoRP
             //setData();
         }
         //BUTTONCLICK-------------------------------------------------//
-
-
 
         //ONLOG-------------------------------------------------------//
 
@@ -68,6 +64,7 @@ namespace MundoRP
 		//ONDESLOG----------------------------------------------------//
 		private void OnPlayerDisconnected(UnturnedPlayer Player)
 		{
+            Instance.ModalOpenedPlayers.Remove(Player);
             int playerId = getPlayerIdInList(Player.CSteamID.ToString());
             if(playerId != -1)
 			{
@@ -146,7 +143,7 @@ namespace MundoRP
         //--------------------VEHICLE MANAGER-------------------------//
 
         public Dictionary<CSteamID, Vehicle> vehicleList = new Dictionary<CSteamID, Vehicle>();
-        public List<Garagem> VehicleManager_garagens = new List<Garagem>();
+        public List<Garage> VehicleManager_garagens = new List<Garage>();
 
         //-------------------JOBS--------------------------//
         
@@ -247,10 +244,17 @@ namespace MundoRP
             Reciclador_latasdelixo.Clear();
             motorista_PontosOnibus.Clear();
             Entregador_caixascorreios.Clear();
+            Instance.VehicleManager_garagens.Clear();
+
+            foreach(Garage gr in Configuration.Instance.VehicleManager_Garagens)
+			{
+                Main.Instance.VehicleManager_garagens.Add(gr);
+                Rocket.Core.Logging.Logger.Log("Adicionada a garagem: " + gr.nome);
+			}
 
             Main.Instance.Reciclador_latasdelixo = dataManager.getGarbagesFromDB();
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Reciclador_latasdelixo.Count.ToString() + " Latas de Lixos.");
-            
+            /*
             Main.Instance.Eletricista_postes = dataManager.getPostsFromDB();
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Eletricista_postes.Count.ToString() + " Postes.");
             
@@ -265,10 +269,25 @@ namespace MundoRP
 
             Main.Instance.motorista_PontosOnibus = dataManager.getBusstopsFromDB("terminal");
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Reciclador_aterros.Count.ToString() + " Terminal.");
+            */
         }
 
         // FUNÇÕES
-
+        public Garage getNearbyGarage(UnturnedPlayer player)
+		{
+            Garage NearbyGarage = null;
+            float distance=500;
+            foreach(Garage gr in Main.Instance.VehicleManager_garagens)
+			{
+                Vector3 grPosition = new Vector3(gr.x, gr.y, gr.z);
+                if (Vector3.Distance(grPosition, player.Position) < distance)
+				{
+                    NearbyGarage = gr;
+                    distance = Vector3.Distance(grPosition, player.Position);
+				}
+			}
+            return NearbyGarage;
+		}
         public MundoPlayer getPlayerInList(string csteamid)
 		{
             int i = 0;

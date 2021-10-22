@@ -1,7 +1,6 @@
 ﻿using System;
-using Steamworks;
+using System.Collections.Generic;
 using SDG.Unturned;
-
 
 namespace MundoRP
 {
@@ -15,9 +14,13 @@ namespace MundoRP
 		public ushort health;
 		public ushort fuel;
 		public ushort vehicleId;
+		public string vehicleColor;
+		public int tableId;
+		public List<VehicleBarricade> barList;
 
-		public GarageVehicle(string Owner, ushort vId, DateTime SpawnDate, ushort bat, ushort hp, ushort gas, string vename)
+		public GarageVehicle(int TableId, string Owner, ushort vId, string vColor, DateTime SpawnDate, ushort bat, ushort hp, ushort gas, string vename)
 		{
+			tableId = TableId;
 			owner = Owner;
 			vehicleId = vId;
 			spawnDate = SpawnDate;
@@ -26,6 +29,7 @@ namespace MundoRP
 			health = hp;
 			fuel = gas;
 			vname = vename;
+			vehicleColor = vColor;
 		}
 	}
 }

@@ -16,24 +16,16 @@ namespace MundoRP
 	public class VehicleManager_Methods
 	{
 		NotificationManager Notificator = new NotificationManager();
-		public void createTicket(Vector3 pos, Garagem gr)
+		public void createTicket(Vector3 pos, Garage gr)
 		{
-			int grID = GetGaragemID(gr);
-			Main.Instance.Configuration.Instance.VehicleManager_Garagens[grID].ticketPosX = pos.x;
-			Main.Instance.Configuration.Instance.VehicleManager_Garagens[grID].ticketPosY = pos.y;
-			Main.Instance.Configuration.Instance.VehicleManager_Garagens[grID].ticketPosZ = pos.z;
-
-			Main.Instance.VehicleManager_garagens[grID].ticketPosX = pos.x;
-			Main.Instance.VehicleManager_garagens[grID].ticketPosY = pos.y;
-			Main.Instance.VehicleManager_garagens[grID].ticketPosZ = pos.z;
-
+			int grID = GetGarageID(gr);
 			Main.Instance.Configuration.Save();
 		}
 
-		public void criarGaragem(Garagem garagem)
+		public void criarGarage(Garage garage)
 		{
-			Main.Instance.VehicleManager_garagens.Add(garagem);
-			Main.Instance.Configuration.Instance.VehicleManager_Garagens.Add(garagem);
+			Main.Instance.VehicleManager_garagens.Add(garage);
+			Main.Instance.Configuration.Instance.VehicleManager_Garagens.Add(garage);
 			Main.Instance.Configuration.Save();
 		}
 
@@ -42,7 +34,7 @@ namespace MundoRP
 			Rocket.Core.Logging.Logger.Log("Clearing vehicles!");
 
 			var cleared = 0;
-			for (int i = VehicleManager.vehicles.Count - 1; i >= 0; i--)
+			for (int i = VehicleManager.vehicles.Count; i == 0; i--)
 			{
 				var vehicle = VehicleManager.vehicles[i];
 				vehicle.forceRemoveAllPlayers();
@@ -53,7 +45,7 @@ namespace MundoRP
 			Rocket.Core.Logging.Logger.Log($"Cleared {cleared} vehicles!");
 		}
 
-		public int GetGaragemID(Garagem gr)
+		public int GetGarageID(Garage gr)
 		{
 			for(int i = 0; i < Main.Instance.Configuration.Instance.VehicleManager_Garagens.Count; i++)
 			{
@@ -66,8 +58,11 @@ namespace MundoRP
 			return 0;
 		}
 
-		public void giveVehicle(UnturnedPlayer player, GarageVehicle gv, Garagem garagem)
+		public void giveVehicle(UnturnedPlayer player, int carIndexInPlayerGarage, Garage garage)
 		{
+			MundoPlayer mp = Main.Instance.getPlayerInList(player.CSteamID.ToString());
+			GarageVehicle gv = mp.vehicleList[carIndexInPlayerGarage-1];
+
 			if (Main.Instance.vehicleList.ContainsKey(player.CSteamID))
 			{
 				clearVehiclesByID(player.CSteamID);
@@ -78,19 +73,26 @@ namespace MundoRP
 				//SETTANDO AS CONFIGS DO VEHICLE
 				player.GiveVehicle(gv.vehicleId);
 				InteractableVehicle PlayerVehicle = VehicleManager.vehicles[VehicleManager.vehicles.Count() - 1];
-				Rocket.Core.Logging.Logger.Log(PlayerVehicle.health.ToString());
-				Rocket.Core.Logging.Logger.Log(PlayerVehicle.batteryCharge.ToString());
-				Rocket.Core.Logging.Logger.Log(PlayerVehicle.fuel.ToString());
 				Main.Instance.vehicleList.Add(player.CSteamID, new Vehicle(PlayerVehicle, gv)); //ADICIONANDO O CARRO À LISTA DE VEÍCULOS DO SERVER
-				getVehicleBySteamID(player.CSteamID).transform.position = new Vector3(garagem.x, getVehicleBySteamID(player.CSteamID).transform.position.y, garagem.z);
-				getVehicleBySteamID(player.CSteamID).transform.eulerAngles = garagem.ang;
+				getVehicleBySteamID(player.CSteamID).transform.position = new Vector3(garage.x, getVehicleBySteamID(player.CSteamID).transform.position.y, garage.z);
+				getVehicleBySteamID(player.CSteamID).transform.eulerAngles = garage.ang;
+
+
+				VehicleManager.sendVehicleBatteryCharge(PlayerVehicle, gv.battery);
+				PlayerVehicle.tellBatteryCharge(gv.battery);
+				VehicleManager.sendVehicleFuel(PlayerVehicle, gv.fuel);
+				PlayerVehicle.tellFuel(gv.fuel);
+				VehicleManager.sendVehicleHealth(PlayerVehicle, gv.health);
+				PlayerVehicle.tellHealth(gv.health);
+
 				VehicleManager.instance.channel.send("tellVehicleLock", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, new object[]
-				{		
+				{
 					getVehicleBySteamID(player.CSteamID).instanceID,
 					player.CSteamID,
 					player.Player.quests.groupID,
 					true
 				});
+			mp.actualCar = carIndexInPlayerGarage;
 			}
 			catch (Exception ex)
 			{
@@ -161,6 +163,11 @@ namespace MundoRP
 				}
 			}
 			return false;
+		}
+
+		public string parse(float num)
+		{
+			return num.ToString().Replace(",", ".");
 		}
 	}
 }

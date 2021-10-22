@@ -22,6 +22,9 @@ namespace MundoRP
 			{
 				try
 				{
+					/*
+					 * REFAZER!
+					 * 
 					infoPonto(Player.CSteamID, "BUSQUE PASSAGEIROS NO PONTO");
 					if(Main.Instance.motorista_servicos[Player.CSteamID][0].tipo == "terminal")
 					{
@@ -31,6 +34,7 @@ namespace MundoRP
 					{
 						Notificator.sucesso(UnturnedPlayer.FromCSteamID(Player.CSteamID), "Os passageiros subiram! Vá para o próximo ponto!");
 					}
+					*/
 				}
 				catch (Exception ex)
 				{

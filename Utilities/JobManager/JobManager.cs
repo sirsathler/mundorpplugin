@@ -165,10 +165,7 @@ namespace MundoRP
 								Main.Instance.motorista_servicos[Player.CSteamID].Add(mapManager.GetRandomTerminal());
 								foreach (PontoOnibus pt in Main.Instance.motorista_PontosOnibus)
 								{
-									if (pt.tipo != "terminal")
-									{
-										Main.Instance.motorista_servicos[Player.CSteamID].Add(pt);
-									}
+									Main.Instance.motorista_servicos[Player.CSteamID].Add(pt);
 								}
 								Main.Instance.motorista_servicos[Player.CSteamID].Add(mapManager.GetRandomTerminal());
 								motorista_Methods.infoPonto(Player.CSteamID, "PEGUE PASSAGEIROS NO PONTO");

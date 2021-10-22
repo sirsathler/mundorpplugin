@@ -7,11 +7,18 @@ namespace MundoRP
 {
 	public class DataManager
 	{
+        const string server = "127.0.0.1";
+        const string port = "3306";
+        const string user = "root";
+        const string password = "mundorpadmin1";
+
+        MySqlConnection sqlConn = new MySqlConnection("server=" + server + ";port=" + port + ";User Id=" + user + ";password=" + password);
+
         public string openDB()
         {
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 sqlConn.Close();
                 return "MundoRP | Banco de Dados aberto com sucesso!";
@@ -25,7 +32,6 @@ namespace MundoRP
         {
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("TRUNCATE mundorp."+table, sqlConn);
                 sqlCmd.ExecuteNonQuery();
@@ -41,7 +47,7 @@ namespace MundoRP
         {
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT COUNT(*) FROM mundorp." + table, sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
@@ -64,18 +70,18 @@ namespace MundoRP
         {
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT username, steamid, level, xp, job, premium, mp, rp FROM mundorp.players WHERE steamid=" + id.ToString(), sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
                 MySqlDataReader dr = sqlCmd.ExecuteReader();
                 dr.Read();
-                //CRIANDO NOVO OBJETO USUÁRIO=====================
+
                 bool premium = false;
                 premium = Convert.ToDateTime(dr.GetString(5)) > DateTime.Now ? true : false;
                 List<GarageVehicle> garageVehicles = getVehiclesBySteamId(id);
                 MundoPlayer player = new MundoPlayer(dr.GetString(0), id, Convert.ToInt32(dr.GetString(2)), Convert.ToInt32(dr.GetString(3)), dr.GetString(4), premium, (float)Convert.ToDouble(dr.GetString(7)), (float)Convert.ToDouble(dr.GetString(6)), garageVehicles);
-                sqlConn.Close();  // FECHANDO A CONEXÃO COM O BANCO
+                sqlConn.Close();
                 
                 return player;
 
@@ -89,14 +95,13 @@ namespace MundoRP
 
         public List<GarageVehicle> getVehiclesBySteamId(Steamworks.CSteamID id)
 		{
-            //GETTING PLAYER CARS
             List<GarageVehicle> playerVehicles = new List<GarageVehicle>();
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
 
-                MySqlCommand sqlCmd = new MySqlCommand("SELECT Vehicle_uId, Vehicle_Battery, Vehicle_Health, Vehicle_Fuel, Vehicle_Name " +
+                MySqlCommand sqlCmd = new MySqlCommand("SELECT Vehicle_uId, Vehicle_Battery, Vehicle_Health, Vehicle_Fuel, Vehicle_Name, Vehicle_Color, Vehicle_Id" +
                     "FROM mundorp.players" +
                     "INNER JOIN mundorp.vehicles" +
                     "INNER JOIN mundorp.vehiclesdata" +
@@ -111,10 +116,19 @@ namespace MundoRP
                 {
                     while (dr.Read())
                     {
-                        playerVehicles.Add(new GarageVehicle(id.ToString(), Convert.ToUInt16(dr.GetString(0)), DateTime.Now, 100, Convert.ToUInt16(dr.GetString(1)), Convert.ToUInt16(dr.GetString(2)), dr.GetString(3)));
+                        int TableId = Convert.ToUInt16(dr.GetString(5));
+                        string owner = id.ToString();
+                        UInt16 vId = Convert.ToUInt16(dr.GetString(0));
+                        string vColor= dr.GetString(4);
+                        DateTime date = DateTime.Now;
+                        ushort bat = Convert.ToUInt16(dr.GetString(1));
+                        ushort hp = Convert.ToUInt16(dr.GetString(2));
+                        ushort gas = Convert.ToUInt16(dr.GetString(3));
+                        string vname = dr.GetString(4);
+                        playerVehicles.Add(new GarageVehicle(TableId, owner, vId, vColor, date, bat, hp, gas, vname));
                         Rocket.Core.Logging.Logger.Log("Adicionado veículo: " + playerVehicles[i].vname);
                     }
-                    dr.NextResult();
+                    dr.NextResult();    
                     i++;
                 }
                 sqlConn.Close();
@@ -133,7 +147,7 @@ namespace MundoRP
             garbagesList.Clear();
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT posx, posy, posz FROM mundorp.garbages", sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
@@ -163,7 +177,7 @@ namespace MundoRP
             dumpList.Clear();
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT posx, posy, posz FROM mundorp.dumps", sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
@@ -193,7 +207,7 @@ namespace MundoRP
             postList.Clear();
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT name, posx, posy, posz FROM mundorp.posts", sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
@@ -223,7 +237,7 @@ namespace MundoRP
             mailboxList.Clear();
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT name, posx, posy, posz FROM mundorp.posts", sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
@@ -253,7 +267,7 @@ namespace MundoRP
             busstopList.Clear();
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT name, type, posx, posy, posz FROM mundorp.posts WHERE tipo="+type, sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
@@ -263,7 +277,7 @@ namespace MundoRP
                 {
                     while (dr.Read())
                     {
-                        PontoOnibus newBusstop = new PontoOnibus(dr.GetString(0), dr.GetString(1), (float)Convert.ToDouble(dr.GetString(2)), (float)Convert.ToDouble(dr.GetString(3)), (float)Convert.ToDouble(dr.GetString(4)));
+                        PontoOnibus newBusstop = new PontoOnibus(dr.GetString(0), (float)Convert.ToDouble(dr.GetString(2)), (float)Convert.ToDouble(dr.GetString(3)), (float)Convert.ToDouble(dr.GetString(4)));
                         busstopList.Add(newBusstop);
                     }
                     dr.NextResult();
@@ -281,7 +295,7 @@ namespace MundoRP
         {
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT " + column + " FROM " + "mundorp" + "." + table + " WHERE id =" + id.ToString(), sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
@@ -316,7 +330,7 @@ namespace MundoRP
         {
             try
             {
-                MySqlConnection sqlConn = new MySqlConnection("server=127.0.0.1" + ";port=3306" + ";User Id=root" + ";password=mundorpadmin1");
+
                 sqlConn.Open();
                 MySqlCommand sqlCmd = new MySqlCommand("UPDATE mundorp." + table + " set " + column + "=" + valor + " WHERE id=" + id.ToString(), sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;

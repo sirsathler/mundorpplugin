@@ -26,3 +26,4 @@ C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Buffers.xml
 C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Memory.xml
 C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\Block\source\repos\MundoRP\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Block\source\repos\MundoRP\bin\Debug\UnityEngine.UI.dll

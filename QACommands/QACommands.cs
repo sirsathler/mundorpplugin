@@ -30,29 +30,19 @@ namespace MundoRP
 
 		void IRocketCommand.Execute(IRocketPlayer caller, string[] command)
 		{
-			DataManager data = new DataManager();
-			UnturnedPlayer player = (UnturnedPlayer)caller;
-			data.getPlayerBySteamId(player.CSteamID);
-			MundoPlayer p = Main.Instance.getPlayerInList(player.CSteamID.ToString());
-			if (player.IsInVehicle)
-			{
-				try
-				{
-					notificator.erro(player);
-				}
-				catch (Exception ex)
-				{
+			UnturnedPlayer Player = (UnturnedPlayer)caller;
+			NotificationManager Notificator = new NotificationManager();
+			DataManager databaseManager = new DataManager();
+			MundoPlayer mPlayer = Main.Instance.getPlayerInList(Player.CSteamID.ToString());
 
-				}
-			}
-			try
+			if (Player.IsInVehicle)
 			{
-				notificator.GarageHUD(p, p.vehicleList);
-				player.Player.quests.askSetMarker(player.CSteamID, true, new UnityEngine.Vector3(Main.Instance.VehicleManager_garagens[0].x, Main.Instance.VehicleManager_garagens[0].y, Main.Instance.VehicleManager_garagens[0].z));
+				Notificator.alerta(Player, "Salvando o carro: "+mPlayer.actualCar.ToString());
+				databaseManager.updateCar(Main.Instance.vehicleList[Player.CSteamID].iv, Main.Instance.vehicleList[Player.CSteamID].gv.tableId);
 			}
-			catch(Exception ex)
+			else
 			{
-				Rocket.Core.Logging.Logger.Log(ex.ToString());
+				Notificator.erro(Player, "Você não está em um veículo!");
 			}
 		}
 	}
