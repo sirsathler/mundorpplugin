@@ -10,25 +10,18 @@ namespace MundoRP
 {
 	public class Poste
 	{
-		[XmlElement(ElementName = "nome")]
-		public string nome { get; set; }
-
-		[XmlElement(ElementName = "x")]
-		public float x { get; set; }
-
-		[XmlElement(ElementName = "y")]
-		public float y { get; set; }
-
-		[XmlElement(ElementName = "z")]
-		public float z { get; set; }
+		public string name { get; set; }
+		public int x { get; set; }
+		public int y { get; set; }
+		public int z { get; set; }
 
 
-		public Poste(float X, float Y, float Z, string Nome)
+		public Poste(string Name, float X, float Y, float Z)
 		{
-			nome = Nome;
-			x = X;
-			y = Y;
-			z = Z;
+			name = Name;
+			x = Convert.ToInt32(X);
+			y = Convert.ToInt32(Y);
+			z = Convert.ToInt32(Z);
 		}
 
 		private Poste() { }

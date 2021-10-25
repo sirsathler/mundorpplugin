@@ -13,7 +13,7 @@ namespace MundoRP
 	public class Motorista_Methods
 	{
 		NotificationManager Notificator = new NotificationManager();
-		VehicleManager_Methods vm = new VehicleManager_Methods();
+		VehicleManager vm = new VehicleManager();
 
 		public void nextPonto(UnturnedPlayer Player)
 		{
@@ -51,8 +51,8 @@ namespace MundoRP
 			{
 				try
 				{
-					VehicleManager_Methods vehicleManager_Methods = new VehicleManager_Methods();
-					vehicleManager_Methods.clearVehiclesByID(Player.CSteamID);
+					MundoVehicleManager VehicleManager = new MundoVehicleManager();
+					VehicleManager.clearVehiclesByID(Player.CSteamID);
 					EffectManager.askEffectClearByID(21003, Player.CSteamID);
 					Notificator.sucesso(UnturnedPlayer.FromCSteamID(Player.CSteamID), "Fim da viagem!");
 					EffectManager.sendUIEffect(16520, 16520, Player.CSteamID, false);
@@ -68,7 +68,7 @@ namespace MundoRP
 		public void infoPonto(CSteamID Player, string message)
 		{
 			EffectManager.askEffectClearByID(21003, Player);
-			EffectManager.sendUIEffect(21003, 21003, Player, false, message.ToUpper(), Main.Instance.motorista_servicos[Player][0].nome.ToUpper(), "use /ponto");
+			EffectManager.sendUIEffect(21003, 21003, Player, false, message.ToUpper(), Main.Instance.motorista_servicos[Player][0].name.ToUpper(), "use /ponto");
 			return;
 		}
 

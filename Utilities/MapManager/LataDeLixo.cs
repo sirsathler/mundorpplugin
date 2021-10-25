@@ -16,9 +16,9 @@ namespace MundoRP
 		public LataDeLixo(float X, float Y, float Z)
 		{
 			id = Main.Instance.Reciclador_latasdelixo.Count + 1;
-			x = X;
-			y = Y;
-			z = Z;
+			x = Convert.ToInt32(X);
+			y = Convert.ToInt32(Y);
+			z = Convert.ToInt32(Z);
 		}
 
 		private LataDeLixo() { }

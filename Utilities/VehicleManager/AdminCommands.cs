@@ -27,7 +27,7 @@ namespace MundoRP
 			NotificationManager Notificator = new NotificationManager();
 			DataManager DBManager = new DataManager();
 			UnturnedPlayer Player = (UnturnedPlayer)caller;
-			VehicleManager_Methods methods = new VehicleManager_Methods();
+			MundoVehicleManager methods = new MundoVehicleManager();
 
 			if (command[0] == "reset")
 			{

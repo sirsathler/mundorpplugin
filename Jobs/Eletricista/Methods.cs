@@ -42,7 +42,7 @@ namespace MundoRP
 		public void infoPoste(CSteamID Player)
 		{
 			EffectManager.askEffectClearByID(21001, Player);
-			EffectManager.sendUIEffect(21001, 21001, Player, false, "CONSERTE O POSTE DA CASA", Main.Instance.Eletricista_servicos[Player][0].nome.ToLower(), "use /consertar");
+			EffectManager.sendUIEffect(21001, 21001, Player, false, "CONSERTE O POSTE DA CASA", Main.Instance.Eletricista_servicos[Player][0].name.ToLower(), "use /consertar");
 		}
 	}
 }

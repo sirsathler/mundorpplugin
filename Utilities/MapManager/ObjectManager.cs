@@ -14,5 +14,13 @@ namespace MundoRP
 		public List<PontoOnibus> PontosDeOnibus;
 		public List<Poste> Postes;
 
+		public ObjectManager(List<Aterro> aterros, List<CaixaCorreio> caixasCorreios, List<LataDeLixo> latasDeLixo, List<PontoOnibus> pontosDeOnibus, List<Poste> postes)
+		{
+			Aterros = aterros;
+			CaixasCorreios = caixasCorreios;
+			LatasDeLixo = latasDeLixo;
+			PontosDeOnibus = pontosDeOnibus;
+			Postes = postes;
+		}
 	}
 }

@@ -34,7 +34,10 @@ namespace MundoRP
 				Notificator.alerta(Player, "Adicionando dados no banco!");
 				try
 				{
-					Main.Instance.setData();
+					if (Main.Instance.setData())
+					{
+						Notificator.sucesso(Player, "Banco de Dados atualizado com sucesso!");
+					}
 				}
 				catch (Exception ex)
 				{

@@ -22,7 +22,6 @@ namespace MundoRP
         //------------------ COMMON OBJECTS
         public List<MundoPlayer> PlayerList = new List<MundoPlayer>(); //PLAYERLIST
         public Dictionary<UnturnedPlayer, ModalBeacon> ModalOpenedPlayers = new Dictionary<UnturnedPlayer, ModalBeacon>();
-        VehicleManager_Methods vmMethods = new VehicleManager_Methods();
         public DataManager Data = new DataManager(); //DATAMANAGER
         public static Main Instance;
         protected override void Load()
@@ -43,7 +42,7 @@ namespace MundoRP
         }
 		protected override void Unload()
 		{
-            //setData();
+            setData();
         }
         //BUTTONCLICK-------------------------------------------------//
 
@@ -168,82 +167,24 @@ namespace MundoRP
         public List<PontoOnibus> motorista_Terminais = new List<PontoOnibus>();
         public Dictionary<CSteamID, List<PontoOnibus>> motorista_servicos = new Dictionary<CSteamID, List<PontoOnibus>>();
 
-        public void setData()
+        public bool setData()
 		{
-            Rocket.Core.Logging.Logger.Log("Mundo Roleplay Plugin | Salvando arquivos no banco de dados!");
-            
-            dataManager.truncateTable("busstops");
-            dataManager.truncateTable("garbages");
-            dataManager.truncateTable("dumps");
-            dataManager.truncateTable("posts");
-            dataManager.truncateTable("mailbox");
-
-
-            foreach (Poste po in Instance.Eletricista_postes)
-            {
-                try
-                {
-                    //Rocket.Core.Logging.Logger.Log(dataManager.addPosts(po));
-                }
-                catch (Exception ex)
-                {
-                    Rocket.Core.Logging.Logger.Log(ex);
-                }
-            }
-
-            foreach (PontoOnibus po in Instance.motorista_PontosOnibus)
-            {
-                try
-                {
-                    //Rocket.Core.Logging.Logger.Log(dataManager.addBusStop(po));
-                }
-                catch (Exception ex)
-                {
-                    Rocket.Core.Logging.Logger.Log(ex);
-                }
-            }
-            foreach (LataDeLixo lx in Instance.Reciclador_latasdelixo)
-			{
-				try
-				{
-                  //Rocket.Core.Logging.Logger.Log(dataManager.addGarbage(lx));
-                }
-                catch (Exception ex)
-				{
-                    Rocket.Core.Logging.Logger.Log(ex);
-                }
-            }
-            foreach (Aterro at in Instance.Reciclador_aterros)
-            {
-                try
-                {
-                    //Rocket.Core.Logging.Logger.Log(dataManager.addDump(at));
-                }
-                catch (Exception ex)
-                {
-                    Rocket.Core.Logging.Logger.Log(ex);
-                }
-            }
-            foreach (CaixaCorreio cc in Instance.Entregador_caixascorreios)
-            {
-                try
-                {
-                    //Rocket.Core.Logging.Logger.Log(dataManager.addMailbox(cc));
-                }
-                catch (Exception ex)
-                {
-                    Rocket.Core.Logging.Logger.Log(ex);
-                }
-            }    
+            ObjectManager objManager = new ObjectManager(Instance.Reciclador_aterros, Instance.Entregador_caixascorreios, Instance.Reciclador_latasdelixo, Instance.motorista_PontosOnibus, Instance.Eletricista_postes);
+            Rocket.Core.Logging.Logger.Log("Adicionando ao banco: " + objManager.Aterros.Count + " Aterros!");
+            Rocket.Core.Logging.Logger.Log("Adicionando ao banco: " + objManager.CaixasCorreios.Count + " Caixas de Correios!");
+            Rocket.Core.Logging.Logger.Log("Adicionando ao banco: " + objManager.LatasDeLixo.Count + " Latas de Lixo!");
+            Rocket.Core.Logging.Logger.Log("Adicionando ao banco: " + objManager.PontosDeOnibus.Count + " Pontos de Ônibus!");
+            Rocket.Core.Logging.Logger.Log("Adicionando ao banco: " + objManager.Postes.Count + " Postes!");
+            return dataManager.updateObjects(objManager);
         }
 
         public void readData() // LOAD DATA
         {
-            Eletricista_postes.Clear();
-            Reciclador_aterros.Clear();
-            Reciclador_latasdelixo.Clear();
-            motorista_PontosOnibus.Clear();
-            Entregador_caixascorreios.Clear();
+            Instance.Eletricista_postes.Clear();
+            Instance.Reciclador_aterros.Clear();
+            Instance.Reciclador_latasdelixo.Clear();
+            Instance.motorista_PontosOnibus.Clear();
+            Instance.Entregador_caixascorreios.Clear();
             Instance.VehicleManager_garagens.Clear();
 
             foreach(Garage gr in Configuration.Instance.VehicleManager_Garagens)
@@ -252,24 +193,23 @@ namespace MundoRP
                 Rocket.Core.Logging.Logger.Log("Adicionada a garagem: " + gr.nome);
 			}
 
-            Main.Instance.Reciclador_latasdelixo = dataManager.getGarbagesFromDB();
+            ObjectManager objManager = dataManager.getObjectsFromDB();
+
+            Main.Instance.Reciclador_latasdelixo = objManager.LatasDeLixo;
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Reciclador_latasdelixo.Count.ToString() + " Latas de Lixos.");
-            
-            Main.Instance.Eletricista_postes = dataManager.getPostsFromDB();
+
+            Main.Instance.Eletricista_postes = objManager.Postes;
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Eletricista_postes.Count.ToString() + " Postes.");
-            
-            Main.Instance.Entregador_caixascorreios = dataManager.getMailBoxesFromDB();
+
+            Main.Instance.Entregador_caixascorreios = objManager.CaixasCorreios;
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Entregador_caixascorreios.Count.ToString() + " Caixas de Correios.");
-            
-            Main.Instance.Reciclador_aterros = dataManager.getDumpsFromDB();
+
+            Main.Instance.Reciclador_aterros = objManager.Aterros;
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Reciclador_aterros.Count.ToString() + " Aterros Sanitários.");
-            
-            Main.Instance.motorista_PontosOnibus = dataManager.getBusstopsFromDB("ponto");
+
+            Main.Instance.motorista_PontosOnibus = objManager.PontosDeOnibus;
             Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Reciclador_aterros.Count.ToString() + " Pontos de Ônibus.");
 
-            Main.Instance.motorista_PontosOnibus = dataManager.getBusstopsFromDB("terminal");
-            Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.Reciclador_aterros.Count.ToString() + " Terminal.");
-            
         }
 
         // FUNÇÕES

@@ -19,34 +19,65 @@ namespace MundoRP
         public void GarageHUD(MundoPlayer mplayer, UnturnedPlayer uplayer)
 		{
             EffectManager.sendUIEffect(17000, 17000, uplayer.CSteamID, false);
-            for (int i = 1; i <= 8; i++)
+            float totalDebts = 0;
+            for (int i = 1; i <= 6; i++)
             {
-
                 if (i <= mplayer.vehicleList.Count)
                 {
                     EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Name", mplayer.vehicleList[i-1].vname);
                     EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Color", mplayer.vehicleList[i-1].vehicleColor);
-                
-                    if(i == mplayer.actualCar)
+                    if (mplayer.vehicleList[i - 1].vehicleDebts.Count == 0)
 					{
-                        EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Status", "Guardar");
-                        //carButton.color = new Color(194, 38, 30);
-                    }
-                    else
+                        if(i == mplayer.actualCar)
+					    {
+                            EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Status", "EM RUA!");
+                        }
+						else
+						{
+                            EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Status", "");
+						}
+					}
+					else
 					{
-                        EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Status", "Retirar");
-                        //carButton.color = new Color(0, 114, 207);
-                    }
+                        float carDebts = 0;
+                        foreach (VehicleDebt vD in mplayer.vehicleList[i - 1].vehicleDebts)
+						{
+                            carDebts += vD.value;
+						}
+                        EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Status", "COM DÉBITOS");
+                        EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Debts", carDebts.ToString()+"RP");
+                        totalDebts += carDebts;
+					}
                 }
-                else
-                {
-                    EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Name", "SEM VEÍCULO!");
+				else
+				{
+                    EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Name", "vazio");
                     EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Color", "");
                     EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "Car#" + i + "Status", "");
-                }
+				}
             }
+            EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "GarageCars#Input", mplayer.vehicleList.Count.ToString());
+            EffectManager.sendUIEffectText(17000, uplayer.CSteamID, true, "GarageDebt#Input", totalDebts.ToString());
             uplayer.Player.serversideSetPluginModal(true);
 		}
+
+        public void parkHUD(UnturnedPlayer uplayer)
+		{
+            uiClose(uplayer, 17001);
+            EffectManager.sendUIEffect(17001, 17001, uplayer.CSteamID, false);
+            uplayer.Player.serversideSetPluginModal(true);
+        }
+
+
+
+
+
+
+
+
+
+
+
 
         //CLEAR ALL----------------------------------//
         public void updateHUD(MundoPlayer player)
@@ -81,9 +112,9 @@ namespace MundoRP
         }
 
         //EXP!
-        public void exp(UnturnedPlayer player)
+        public void exp(UnturnedPlayer player, int amount)
         {
-            EffectManager.sendUIEffect(14523, 14523, player.CSteamID, false, "você recebeu 1 ponto de EXP!".ToUpper());
+            EffectManager.sendUIEffect(14523, 14523, player.CSteamID, false, "você recebeu "+amount+" ponto de EXP!".ToUpper());
         }
 
         //LEVEL!
@@ -107,16 +138,11 @@ namespace MundoRP
 
 
 
-
-
-
-
-
         //================================ UI MANAGER =============================================== //
 
-        public void uiClose(UnturnedPlayer uplayer)
+        public void uiClose(UnturnedPlayer uplayer, ushort id)
 		{
-            EffectManager.askEffectClearByID(17000, uplayer.CSteamID); //Garagem
+            EffectManager.askEffectClearByID(id, uplayer.CSteamID);
             uplayer.Player.serversideSetPluginModal(false);
         }
 
@@ -125,7 +151,7 @@ namespace MundoRP
             UnturnedPlayer uplayer = UnturnedPlayer.FromPlayer(player);
             MundoPlayer mplayer = Main.Instance.getPlayerInList(uplayer.CSteamID.ToString());
             NotificationManager notification = new NotificationManager();
-            VehicleManager_Methods vehicleManager = new VehicleManager_Methods();
+            MundoVehicleManager vehicleManager = new MundoVehicleManager();
 
             //GARAGE================================
             if (buttonName == "CloseButton")
@@ -146,25 +172,38 @@ namespace MundoRP
                     erro(uplayer, "Você não possui veículos nessa vaga!");
                     return;
 				}
-                if (carId == Main.Instance.getPlayerInList(uplayer.CSteamID.ToString()).actualCar)
+                if (mplayer.vehicleList[carId-1].vehicleDebts.Count != 0)
 				{
-                    vehicleManager.clearVehiclesByID(uplayer.CSteamID);
-                    data.updateCar(Main.Instance.vehicleList[uplayer.CSteamID].iv, Main.Instance.vehicleList[uplayer.CSteamID].gv.tableId);
-                    sucesso(uplayer, "Você guardou seu veículo na garagem!");
-                    mplayer.actualCar = 0;
-                    uiClose(uplayer);
+                    erro(uplayer, "Veículo com débitos! Procure uma prefeitura!");
                     return;
 				}
+                if (carId == Main.Instance.getPlayerInList(uplayer.CSteamID.ToString()).actualCar)
+				{
+                    alerta(uplayer, "Entre no carro para guardá-lo na garagem!");
+                    return;
+                }
+                if (mplayer.actualCar != 0)
+				{
+                    erro(uplayer, "Você já possui um veículo em rua! Guarde-o na garagem!");
+                    return;
+                }
                 vehicleManager.giveVehicle(uplayer, carId, Main.Instance.getNearbyGarage(uplayer));
-                uiClose(uplayer);
+                uiClose(uplayer, 17000);
                 sucesso(uplayer, "Veículo retirado da garagem!");
 			}
+            //======================================//
+            //PARKBUTTON
+            if (buttonName == "ParkButton")
+            {
+                vehicleManager.clearVehiclesByID(uplayer.CSteamID);
+                data.updateCar(Main.Instance.vehicleList[uplayer.CSteamID].iv, Main.Instance.vehicleList[uplayer.CSteamID].gv.tableId);
+                sucesso(uplayer, "Você guardou seu veículo na garagem!");
+                mplayer.actualCar = 0;
+                uiClose(uplayer, 17001);
+                return;
+            }
 
-            //======================================
         }
-
-
         //========================= UI METHODS ======================================================== //
-
     }
 }

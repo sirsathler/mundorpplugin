@@ -105,6 +105,7 @@
     <Compile Include="Utilities\DatabaseManager\DataConnector.cs" />
     <Compile Include="Utilities\DatabaseManager\DataManager.cs" />
     <Compile Include="Utilities\GarageManager\VehicleBarricade.cs" />
+    <Compile Include="Utilities\GarageManager\VehicleDebt.cs" />
     <Compile Include="Utilities\HelpManager\HelpCommand.cs" />
     <Compile Include="Utilities\JobManager\JobManager.cs" />
     <Compile Include="Utilities\MapManager\Aterro.cs" />
@@ -122,7 +123,7 @@
     <Compile Include="Utilities\GarageManager\Vehicle.cs" />
     <Compile Include="Utilities\VehicleManager\AdminCommands.cs" />
     <Compile Include="Utilities\GarageManager\Garage.cs" />
-    <Compile Include="Utilities\VehicleManager\VehicleManager_Methods.cs" />
+    <Compile Include="Utilities\VehicleManager\MundoVehicleManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

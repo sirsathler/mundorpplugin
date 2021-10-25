@@ -235,7 +235,7 @@ namespace MundoRP
 
 								if (Player.IsInVehicle == true && Player.CurrentVehicle.id == Main.Instance.Configuration.Instance.Reciclador_Carro)
 								{
-									VehicleManager_Methods vmethods = new VehicleManager_Methods();
+									MundoVehicleManager vmethods = new MundoVehicleManager();
 									Notificator.sucesso(Player, "Você descarregou o caminhão!");
 									EffectManager.sendUIEffect(16520, 16520, Player.CSteamID, false);
 									EffectManager.askEffectClearByID(21000, Player.CSteamID);

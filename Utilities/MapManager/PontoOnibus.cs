@@ -12,20 +12,20 @@ namespace MundoRP
 {
 	public class PontoOnibus
 	{
-		public string nome;
+		public string name;
 
-		public float x;
+		public int x;
 
-		public float y;
+		public int y;
 
-		public float z;
+		public int z;
 
-		public PontoOnibus(string Nome, float X, float Y, float Z)
+		public PontoOnibus(string Name, float X, float Y, float Z)
 		{
-			nome = Nome;
-			x = X;
-			y = Y;
-			z = Z;
+			name = Name;
+			x = Convert.ToInt32(X);
+			y = Convert.ToInt32(Y);
+			z = Convert.ToInt32(Z);
 		}
 
 		private PontoOnibus() { }

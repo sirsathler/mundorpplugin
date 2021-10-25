@@ -43,7 +43,7 @@ namespace MundoRP
 			{
 				EffectManager.askEffectClearByID(21002, Player);
 				Notificator.sucesso(UnturnedPlayer.FromCSteamID(Player), "Ultima correspondência entregada!");
-				VehicleManager_Methods vehicleManager_Methods = new VehicleManager_Methods();
+				VehicleManager VehicleManager = new VehicleManager();
 				EffectManager.sendUIEffect(16520, 16520, Player, false);
 				Main.Instance.Entregador_servicos.Remove(Player);
 				Main.Instance.vehicleList[Player].gv.usable = false;
@@ -53,7 +53,7 @@ namespace MundoRP
 		public void infoCaixa(CSteamID Player)
 		{
 			EffectManager.askEffectClearByID(21002, Player);
-			EffectManager.sendUIEffect(21002, 21002, Player, false, "ENTREGUE A ENCOMENDA", Main.Instance.Entregador_servicos[Player][0].nome.ToLower(), "use /entregar");
+			EffectManager.sendUIEffect(21002, 21002, Player, false, "ENTREGUE A ENCOMENDA", Main.Instance.Entregador_servicos[Player][0].name.ToLower(), "use /entregar");
 		}
 	}
 }

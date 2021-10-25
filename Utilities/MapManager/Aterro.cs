@@ -12,19 +12,18 @@ namespace MundoRP
 {
 	public class Aterro
 	{
-		public int id;
+		public string name;
 		public float x;
 		public float y;
 		public float z;
 
 
-		public Aterro(float X, float Y, float Z)
+		public Aterro(string Name, float X, float Y, float Z)
 		{
-			id = Main.Instance.Reciclador_aterros.Count + 1;
-
-			x = X;
-			y = Y;
-			z = Z;
+			name = Name;
+			x = Convert.ToInt32(X);
+			y = Convert.ToInt32(Y);
+			z = Convert.ToInt32(Z);
 		}
 
 		private Aterro() { }

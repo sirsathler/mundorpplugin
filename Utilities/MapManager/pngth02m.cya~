@@ -11,11 +11,11 @@ namespace MundoRP
 	{
 		public string name;
 
-		public float x;
+		public int x;
 		
-		public float y;
+		public int y;
 		
-		public float z;
+		public int z;
 
 
 

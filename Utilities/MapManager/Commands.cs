@@ -26,7 +26,7 @@ namespace MundoRP
 		{
 			UnturnedPlayer Player = (UnturnedPlayer)caller;
 			NotificationManager Notificator = new NotificationManager();
-			VehicleManager_Methods vehicle_Methods = new VehicleManager_Methods();
+			MundoVehicleManager vehicle_Methods = new MundoVehicleManager();
 
 			if (command.Length == 0) // /LIXEIROS
 			{
@@ -115,7 +115,7 @@ namespace MundoRP
 
 				else if (command[0] == "c-aterro" || command[0] == "+at")
 				{
-					Main.Instance.Reciclador_aterros.Add(new Aterro(Player.Position.x, Player.Position.y, Player.Position.z));
+					Main.Instance.Reciclador_aterros.Add(new Aterro("dump", Player.Position.x, Player.Position.y, Player.Position.z));
 					Main.Instance.Configuration.Save();
 					Notificator.sucesso(Player, "Aterro criado com sucesso!");
 					return;
@@ -191,7 +191,7 @@ namespace MundoRP
 								Notificator.erro(Player, "muito próximo a outro ponto! escolha outro lugar.");
 								return;
 							}
-							if (po.nome == command[1])
+							if (po.name == command[1])
 							{
 								Notificator.erro(Player, "Já existe um ponto com esse nome!");
 								return;
@@ -250,7 +250,7 @@ namespace MundoRP
 					{
 						foreach (PontoOnibus po in Main.Instance.motorista_PontosOnibus)
 						{
-							if (po.nome == command[1])
+							if (po.name == command[1])
 							{
 								try
 								{
@@ -286,7 +286,7 @@ namespace MundoRP
 								Notificator.erro(Player, "muito próximo a outro poste! escolha outro lugar.");
 								return;
 							}
-							if (pst.nome == command[1])
+							if (pst.name == command[1])
 							{
 								Notificator.erro(Player, "Já existe um poste com esse nome!");
 								return;
@@ -296,7 +296,7 @@ namespace MundoRP
 
 					try
 					{
-						Main.Instance.Eletricista_postes.Add(new Poste(Player.Position.x, Player.Position.y, Player.Position.z, command[1]));
+						Main.Instance.Eletricista_postes.Add(new Poste(command[1], Player.Position.x, Player.Position.y, Player.Position.z));
 						Notificator.sucesso(Player, "poste criado com sucesso!");
 						return;
 					}
@@ -336,7 +336,7 @@ namespace MundoRP
 					{
 						foreach (Poste pst in Main.Instance.Eletricista_postes)
 						{
-							if (pst.nome == command[1])
+							if (pst.name == command[1])
 							{
 								try
 								{
@@ -369,7 +369,7 @@ namespace MundoRP
 					{
 						foreach (CaixaCorreio cc in Main.Instance.Entregador_caixascorreios)
 						{
-							if(cc.nome == command[1])
+							if(cc.name == command[1])
 							{
 								Notificator.erro(Player, "Já possui uma caixa de correio com esse endereço!");
 								return;
@@ -383,7 +383,7 @@ namespace MundoRP
 					}
 					try
 					{
-						Main.Instance.Entregador_caixascorreios.Add(new CaixaCorreio(Player.Position.x, Player.Position.y, Player.Position.z, command[1]));
+						Main.Instance.Entregador_caixascorreios.Add(new CaixaCorreio(command[1], Player.Position.x, Player.Position.y, Player.Position.z));
 						Notificator.sucesso(Player, "Caixa de Correio criado com sucesso!");
 						return;
 					}
@@ -398,7 +398,7 @@ namespace MundoRP
 				{
 					foreach (CaixaCorreio cx in Main.Instance.Entregador_caixascorreios)
 					{
-						if (cx.nome == command[1])
+						if (cx.name == command[1])
 						{
 							try
 							{

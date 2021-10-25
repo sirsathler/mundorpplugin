@@ -13,7 +13,7 @@ using Rocket.Unturned.Events;
 
 namespace MundoRP
 {
-	public class VehicleManager_Methods
+	public class MundoVehicleManager
 	{
 		NotificationManager Notificator = new NotificationManager();
 		public void createTicket(Vector3 pos, Garage gr)
@@ -34,7 +34,7 @@ namespace MundoRP
 			Rocket.Core.Logging.Logger.Log("Clearing vehicles!");
 
 			var cleared = 0;
-			for (int i = VehicleManager.vehicles.Count; i == 0; i--)
+			for (int i = VehicleManager.vehicles.Count; i >= 0; i--)
 			{
 				var vehicle = VehicleManager.vehicles[i];
 				vehicle.forceRemoveAllPlayers();
