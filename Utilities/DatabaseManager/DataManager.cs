@@ -66,6 +66,7 @@ namespace MundoRP
             }
         }
 
+        
         //GETTERS====================================================================================================================
 
         public MundoPlayer getPlayerBySteamId(Steamworks.CSteamID id)
@@ -162,8 +163,8 @@ namespace MundoRP
             {
                 while (dr.Read())
                 {
-                    Rocket.Core.Logging.Logger.Log(((float)Convert.ToUInt16(dr.GetString("Debt_Value"))).ToString());
-                    newVehicleDebts.Add(new VehicleDebt(dr.GetString("Debt_Description"), (float)Convert.ToUInt16(dr.GetString("Debt_Value"))));
+                    Rocket.Core.Logging.Logger.Log(((float)Convert.ToUInt32(dr.GetString("Debt_Value"))).ToString());
+                    newVehicleDebts.Add(new VehicleDebt(dr.GetString("Debt_Description"), (float)Convert.ToUInt32(dr.GetString("Debt_Value"))));
                 }
                 dr.NextResult();
                 i++;

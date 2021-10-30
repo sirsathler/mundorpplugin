@@ -29,22 +29,6 @@ namespace MundoRP
 			Main.Instance.Configuration.Save();
 		}
 
-		public void ClearVehicles()
-		{
-			Rocket.Core.Logging.Logger.Log("Clearing vehicles!");
-
-			var cleared = 0;
-			for (int i = VehicleManager.vehicles.Count; i >= 0; i--)
-			{
-				var vehicle = VehicleManager.vehicles[i];
-				vehicle.forceRemoveAllPlayers();
-				VehicleManager.instance.channel.send("tellVehicleDestroy", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, vehicle.instanceID);
-				cleared++;
-			}
-
-			Rocket.Core.Logging.Logger.Log($"Cleared {cleared} vehicles!");
-		}
-
 		public int GetGarageID(Garage gr)
 		{
 			for(int i = 0; i < Main.Instance.Configuration.Instance.VehicleManager_Garagens.Count; i++)
@@ -58,7 +42,7 @@ namespace MundoRP
 			return 0;
 		}
 
-		public void giveVehicle(UnturnedPlayer player, int carIndexInPlayerGarage, Garage garage)
+		public void giveVehicle(UnturnedPlayer player, int carIndexInPlayerGarage, int carTableId, Garage garage)
 		{
 			MundoPlayer mp = Main.Instance.getPlayerInList(player.CSteamID.ToString());
 			GarageVehicle gv = mp.vehicleList[carIndexInPlayerGarage-1];
@@ -92,7 +76,7 @@ namespace MundoRP
 					player.Player.quests.groupID,
 					true
 				});
-			mp.actualCar = carIndexInPlayerGarage;
+			mp.actualCar = carTableId;
 			}
 			catch (Exception ex)
 			{

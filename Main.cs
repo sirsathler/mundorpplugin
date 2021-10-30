@@ -48,6 +48,22 @@ namespace MundoRP
 
         //ONLOG-------------------------------------------------------//
 
+        public void ClearVehicles()
+        {
+            Rocket.Core.Logging.Logger.Log("Clearing vehicles!");
+
+            var cleared = 0;
+            var vehicles = VehicleManager.vehicles;
+            for (int i = vehicles.Count - 1; i >= 0; i--)
+            {
+                var vehicle = vehicles[i];
+                VehicleManager.instance.channel.send("tellVehicleDestroy", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, vehicle.instanceID);
+                cleared++;
+                
+            }
+            Rocket.Core.Logging.Logger.Log("Veiculos limpados: " + cleared);
+
+        }
         private void OnPlayerConnected(UnturnedPlayer Player)
 		{
             MundoPlayer newplayer = dataManager.getPlayerBySteamId(Player.CSteamID);

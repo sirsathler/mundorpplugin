@@ -32,17 +32,17 @@ namespace MundoRP
 			}
 			else
 			{
-				EffectManager.askEffectClearByID(21001, Player);
+				EffectManager.askEffectClearByID(21001, UnturnedPlayer.FromCSteamID(Player).SteamPlayer().transportConnection);
 				Notificator.sucesso(UnturnedPlayer.FromCSteamID(Player), "Ultimo poste consertado!");
-				EffectManager.sendUIEffect(16520, 16520, Player, false);
+				EffectManager.sendUIEffect(16520, 16520, UnturnedPlayer.FromCSteamID(Player).SteamPlayer().transportConnection, false);
 				Main.Instance.Eletricista_servicos.Remove(Player);
 			}
 		}
 
 		public void infoPoste(CSteamID Player)
 		{
-			EffectManager.askEffectClearByID(21001, Player);
-			EffectManager.sendUIEffect(21001, 21001, Player, false, "CONSERTE O POSTE DA CASA", Main.Instance.Eletricista_servicos[Player][0].name.ToLower(), "use /consertar");
+			EffectManager.askEffectClearByID(21001, UnturnedPlayer.FromCSteamID(Player).SteamPlayer().transportConnection);
+			EffectManager.sendUIEffect(21001, 21001, UnturnedPlayer.FromCSteamID(Player).SteamPlayer().transportConnection, false, "CONSERTE O POSTE DA CASA", Main.Instance.Eletricista_servicos[Player][0].name.ToLower(), "use /consertar");
 		}
 	}
 }

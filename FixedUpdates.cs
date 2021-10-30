@@ -16,8 +16,8 @@ using UnityEngine;
 namespace MundoRP
 {
     public partial class Main : RocketPlugin<Configuration>
-    { 
-		public void removePlayer()
+    {
+		public void removePlayerFromModal()
 		{
 			foreach (UnturnedPlayer uplayer in Main.Instance.ModalOpenedPlayers.Keys)
 			{
@@ -52,19 +52,27 @@ namespace MundoRP
 						if (Vector3.Distance(uplayer.Position, grPosition) <= Main.Instance.Configuration.Instance.GarageBeacon_Range)
 						{
 							NotificationManager notificator = new NotificationManager();
-							if (uplayer.IsInVehicle && uplayer.CurrentVehicle.instanceID == Main.Instance.vehicleList[uplayer.CSteamID].iv.instanceID)
+							if (uplayer.IsInVehicle)
 							{
-								try
+								if(uplayer.CurrentVehicle.instanceID == Main.Instance.vehicleList[uplayer.CSteamID].iv.instanceID)
 								{
-									ModalBeacon mb = new ModalBeacon(grPosition, Main.Instance.Configuration.Instance.GarageBeacon_Range, 17001);
-									Main.Instance.ModalOpenedPlayers.Add(uplayer, mb);
-									notificator.parkHUD(uplayer);
-									return;
+									try
+									{
+										ModalBeacon modalb = new ModalBeacon(grPosition, Main.Instance.Configuration.Instance.GarageBeacon_Range, 17001);
+										Main.Instance.ModalOpenedPlayers.Add(uplayer, modalb);
+										notificator.parkHUD(uplayer);
+										return;
+									}
+									catch (Exception ex)
+									{
+										Rocket.Core.Logging.Logger.Log(ex.ToString());
+										return;
+									}
 								}
-								catch (Exception ex)
-								{
-									Rocket.Core.Logging.Logger.Log(ex.ToString());
-								}
+								ModalBeacon mb = new ModalBeacon(grPosition, Main.Instance.Configuration.Instance.GarageBeacon_Range/2, 17000);
+								Main.Instance.ModalOpenedPlayers.Add(uplayer, mb);
+								notificator.erro(uplayer, "Esse veículo não te pertence!");
+								return;							
 							}
 							try
 							{
@@ -72,11 +80,14 @@ namespace MundoRP
 								ModalBeacon mb = new ModalBeacon(grPosition, Main.Instance.Configuration.Instance.GarageBeacon_Range, 17000);
 								Main.Instance.ModalOpenedPlayers.Add(uplayer, mb);
 								notificator.GarageHUD(getPlayerInList(uplayer.CSteamID.ToString()), uplayer);
+								return;
 							}
 							catch (Exception ex)
 							{
 								Rocket.Core.Logging.Logger.Log(ex.ToString());
+								return;
 							}
+							
 						}
 					}
 				}
@@ -84,7 +95,7 @@ namespace MundoRP
 		}
         public void FixedUpdate()
 		{
-			removePlayer();
+			removePlayerFromModal();
 			GarageModal();
         }
     }
