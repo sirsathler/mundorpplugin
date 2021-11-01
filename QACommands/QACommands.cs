@@ -9,6 +9,8 @@ using SDG.Unturned;
 using Rocket.Unturned.Player;
 using Rocket.Unturned.Chat;
 using MySql.Data.MySqlClient;
+using HarmonyLib;
+
 
 namespace MundoRP
 {
@@ -31,18 +33,17 @@ namespace MundoRP
 		void IRocketCommand.Execute(IRocketPlayer caller, string[] command)
 		{
 			UnturnedPlayer Player = (UnturnedPlayer)caller;
-			NotificationManager Notificator = new NotificationManager();
 			DataManager databaseManager = new DataManager();
-			MundoPlayer mPlayer = Main.Instance.getPlayerInList(Player.CSteamID.ToString());
+			MundoPlayer mPlayer = PlayerManager.getPlayerInList(Player.CSteamID.ToString());
 
 			if (Player.IsInVehicle)
 			{
-				Notificator.alerta(Player, "Salvando o carro: "+mPlayer.actualCar.ToString());
+				NotificationManager.alerta(Player, "Salvando o carro: "+mPlayer.actualCar.ToString());
 				databaseManager.updateCar(Main.Instance.vehicleList[Player.CSteamID].iv, Main.Instance.vehicleList[Player.CSteamID].gv.tableId);
 			}
 			else
 			{
-				Notificator.erro(Player, "Você não está em um veículo!");
+				NotificationManager.erro(Player, "Você não está em um veículo!");
 			}
 		}
 	}

@@ -4,21 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using Rocket.API;
-using Rocket.Core.Plugins;
 using UnityEngine;
 
 namespace MundoRP
 {
-	public class Aterro
+	public class FuseBox
 	{
-		public string name;
-		public float x;
-		public float y;
-		public float z;
+		public string name { get; set; }
+		public int x { get; set; }
+		public int y { get; set; }
+		public int z { get; set; }
 
 
-		public Aterro(string Name, float X, float Y, float Z)
+		public FuseBox(string Name, float X, float Y, float Z)
 		{
 			name = Name;
 			x = Convert.ToInt32(X);
@@ -26,6 +24,6 @@ namespace MundoRP
 			z = Convert.ToInt32(Z);
 		}
 
-		private Aterro() { }
+		private FuseBox() { }
 	}
 }

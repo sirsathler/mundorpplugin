@@ -7,13 +7,13 @@ namespace MundoRP
 {
 	public class Configuration : IRocketPluginConfiguration
 	{
-		// GARAGE ============================================================= //
 		[XmlElement(ElementName = "GarageBeacon_Range")]
 		public float GarageBeacon_Range;
+		
+		[XmlElement(ElementName = "Interaction_Range")]
+		public float Interaction_Range;
 
-		// VEHICLEMANAGER ============================================================= //
-		[XmlElement(ElementName = "VehicleManager_MinRange")]
-		public float VehicleManager_MinRange;
+
 
 		[XmlElement(ElementName = "VehicleManager_Cooldown")]
 		public double VehicleManager_Cooldown;
@@ -21,76 +21,13 @@ namespace MundoRP
 		[XmlArray(ElementName = "VehicleManager_Garagens")]
 		public List<Garage> VehicleManager_Garagens = new List<Garage>() { };
 
-		// MOTORISTA ================================================================== //
-		[XmlElement(ElementName = "Motorista_MinRange")]
-		public float Motorista_MinRange;
-
-		[XmlElement(ElementName = "Motorista_Carro")]
-		public ushort Motorista_Carro;
-
-		// ENTREGADOR =================================================================== //
-		[XmlElement("Entregador_Range")]
-		public float Entregador_Range;
-
-		[XmlElement("Entregador_CargasPorTrabalho")]
-		public int Entregador_CargasPorTrabalho;
-		
-		[XmlElement("Entregador_Carro")]
-		public ushort Entregador_Carro;
-
-		// ELETRICISTA ================================================================ //
-		[XmlElement("Eletricista_MinRange")]
-		public float Eletricista_MinRange;
-
-		[XmlElement("Eletricista_CargasPorTrabalho")]
-		public int Eletricista_CargasPorTrabalho;
-
-		[XmlElement("Eletricista_Carro")]
-		public ushort Eletricista_Carro;
-
-		// LIXEIRO ===================================================================== //
-		[XmlElement("Reciclador_MinRange")]
-		public float Reciclador_MinRange;
-
-		[XmlElement("Reciclador_CargasPorTrabalho")]
-		public int Reciclador_CargasPorTrabalho;
-
-		[XmlElement("Reciclador_Cooldown")]
-		public float Reciclador_Cooldown;
-
-		[XmlElement("Reciclador_Carro")]
-		public ushort Reciclador_Carro;
+		[XmlArray(ElementName = "Job_List")]
+		public List<Job> JobsList = new List<Job>();
 
 		public void LoadDefaults()
 		{
-			//MODALBEACON
 			GarageBeacon_Range = 4;
-
-
-			//VEHICLEMANAGER
-			VehicleManager_MinRange = 4;
-			VehicleManager_Cooldown = 10; //Em Segundos!
-
-
-			//ELETRICISTAS
-			Eletricista_MinRange = 5;
-			Eletricista_CargasPorTrabalho = 3;
-			Eletricista_Carro = 36187;
-
-			//ENTREGADORES
-			Entregador_CargasPorTrabalho = 5;
-			Entregador_Range = 3;
-			Entregador_Carro = 36417;
-
-			//LIXEIROS
-			Reciclador_CargasPorTrabalho = 3;
-			Reciclador_Cooldown = 10;
-			Reciclador_MinRange = 5;
-			Reciclador_Carro = 56193;
-
-			//MOTORISTAS
-			Motorista_MinRange = 10;
-			Motorista_Carro = 47229;
+			Interaction_Range = 5f;
 		}
 	}
 }

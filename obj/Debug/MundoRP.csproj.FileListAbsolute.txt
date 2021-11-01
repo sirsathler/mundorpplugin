@@ -48,3 +48,4 @@ C:\Users\Block\Documents\MundoRP\mundorpplugin\bin\Debug\UnityEngine.CoreModule.
 C:\Users\Block\Documents\MundoRP\mundorpplugin\bin\Debug\UnityEngine.dll
 C:\Users\Block\Documents\MundoRP\mundorpplugin\bin\Debug\UnityEngine.UI.dll
 C:\Users\Block\Documents\MundoRP\mundorpplugin\obj\Debug\MundoRP.csproj.CopyComplete
+C:\Users\Block\Documents\MundoRP\mundorpplugin\bin\Debug\0Harmony.dll

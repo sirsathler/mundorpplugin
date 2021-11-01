@@ -8,19 +8,19 @@ namespace MundoRP
 {
 	public class ObjectManager
 	{
-		public List<Aterro> Aterros;
-		public List<CaixaCorreio> CaixasCorreios;
-		public List<LataDeLixo> LatasDeLixo;
-		public List<PontoOnibus> PontosDeOnibus;
-		public List<Poste> Postes;
+		public List<Dump> Dumps;
+		public List<Mailbox> MailBoxes;
+		public List<Garbage> Garbages;
+		public List<BusStop> BusStops;
+		public List<FuseBox> FuseBoxes;
 
-		public ObjectManager(List<Aterro> aterros, List<CaixaCorreio> caixasCorreios, List<LataDeLixo> latasDeLixo, List<PontoOnibus> pontosDeOnibus, List<Poste> postes)
+		public ObjectManager(List<Dump> dumps, List<Mailbox> mailboxes, List<Garbage> garbages, List<BusStop> busStops, List<FuseBox> fuseBoxes)
 		{
-			Aterros = aterros;
-			CaixasCorreios = caixasCorreios;
-			LatasDeLixo = latasDeLixo;
-			PontosDeOnibus = pontosDeOnibus;
-			Postes = postes;
+			Dumps = dumps;
+			MailBoxes = mailboxes;
+			Garbages = garbages;
+			BusStops = busStops;
+			FuseBoxes = fuseBoxes;
 		}
 	}
 }

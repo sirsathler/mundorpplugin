@@ -31,7 +31,7 @@ namespace MundoRP
 
 			if (command[0] == "reset")
 			{
-				Main.Instance.ClearVehicles();
+				MundoVehicleManager.ClearVehicles();
 				return;
 			}
 		}

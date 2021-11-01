@@ -64,11 +64,10 @@ namespace MundoRP
             uplayer.Player.serversideSetPluginModal(true);
 		}
 
-		[Obsolete]
 		public void parkHUD(UnturnedPlayer uplayer)
 		{
             uiClose(uplayer, 17001);
-            EffectManager.sendUIEffect(17001, 17001, uplayer.CSteamID, false);
+            EffectManager.sendUIEffect(17001, 17001, uplayer.SteamPlayer().transportConnection, false);
             uplayer.Player.serversideSetPluginModal(true);
         }
 
@@ -87,58 +86,58 @@ namespace MundoRP
 
 
         //CLEAR ALL----------------------------------//
-        public void updateHUD(MundoPlayer player)
+        public static void updateHUD(MundoPlayer player)
 		{
             UnturnedPlayer uplayer = UnturnedPlayer.FromCSteamID(player.steamid);
             EffectManager.sendUIEffect(16000, 16000, uplayer.SteamPlayer().transportConnection, false, player.level.ToString(), player.xp.ToString(), player.rp.ToString(), player.job);
 		}
 
         //SUCESSO!
-        public void sucesso(UnturnedPlayer player)
+        public static void sucesso(UnturnedPlayer player)
         {
             EffectManager.sendUIEffect(14522, 14522, player.SteamPlayer().transportConnection, false, "sucesso!".ToUpper());
         }
-        public void sucesso(UnturnedPlayer player, string param)
+        public static void sucesso(UnturnedPlayer player, string param)
         {
             EffectManager.sendUIEffect(14522, 14522, player.SteamPlayer().transportConnection, false, param.ToUpper());
         }
 
         //ERRO!
-        public void erro(UnturnedPlayer player)
+        public static void erro(UnturnedPlayer player)
         {
             EffectManager.sendUIEffect(14520, 14520, player.SteamPlayer().transportConnection, false, "erro!".ToUpper());
         }
-        public void erro(UnturnedPlayer player, string param)
+        public static void erro(UnturnedPlayer player, string param)
         {
             EffectManager.sendUIEffect(14520, 14520, player.SteamPlayer().transportConnection, false, param.ToUpper());
         }
 
         //ALERTA!
-        public void alerta(UnturnedPlayer player, string param)
+        public static void alerta(UnturnedPlayer player, string param)
         {
             EffectManager.sendUIEffect(14521, 14521, player.SteamPlayer().transportConnection, false, param.ToUpper());
         }
 
         //EXP!
-        public void exp(UnturnedPlayer player, int amount)
+        public static void exp(UnturnedPlayer player, int amount)
         {
             EffectManager.sendUIEffect(14523, 14523, player.SteamPlayer().transportConnection, false, "você recebeu "+amount+" ponto de EXP!".ToUpper());
         }
 
         //LEVEL!
-        public void lvl(UnturnedPlayer player)
+        public static void lvl(UnturnedPlayer player)
         {
             EffectManager.sendUIEffect(14524, 14524, player.SteamPlayer().transportConnection, false, "você passou de nível!".ToUpper());
         }
 
         //CHAMADO!
-        public void chamado(UnturnedPlayer player, string param)
+        public static void chamado(UnturnedPlayer player, string param)
         {
             EffectManager.sendUIEffect(14525, 14525, player.SteamPlayer().transportConnection, false, param.ToUpper());
         }
 
         //JOB!
-        public void job(UnturnedPlayer player, string param)
+        public static void job(UnturnedPlayer player, string param)
         {
             EffectManager.sendUIEffect(14526, 14526, player.SteamPlayer().transportConnection, false, param.ToUpper());
         }
@@ -157,9 +156,7 @@ namespace MundoRP
         public void uiButtonClick(Player player, string buttonName)
         {
             UnturnedPlayer uplayer = UnturnedPlayer.FromPlayer(player);
-            MundoPlayer mplayer = Main.Instance.getPlayerInList(uplayer.CSteamID.ToString());
-            NotificationManager notification = new NotificationManager();
-            MundoVehicleManager vehicleManager = new MundoVehicleManager();
+            MundoPlayer mplayer = PlayerManager.getPlayerInList(uplayer.CSteamID.ToString());
 
             //GARAGE================================
             if (buttonName == "CloseButton")
@@ -175,7 +172,7 @@ namespace MundoRP
             if (buttonName.Substring(0,4) == "Car#")
 			{
                 int cardId = Convert.ToInt32(buttonName.Substring(4, 1));
-                mplayer = Main.Instance.getPlayerInList(uplayer.CSteamID.ToString());
+                mplayer = PlayerManager.getPlayerInList(uplayer.CSteamID.ToString());
                 if (cardId > mplayer.vehicleList.Count)
 				{
                     erro(uplayer, "Você não possui veículos nessa vaga!");
@@ -189,7 +186,7 @@ namespace MundoRP
 
                 int carTableId = mplayer.vehicleList[Convert.ToInt32(buttonName.Substring(4, 1)) - 1].tableId;
 
-                if (carTableId == Main.Instance.getPlayerInList(uplayer.CSteamID.ToString()).actualCar)
+                if (carTableId == PlayerManager.getPlayerInList(uplayer.CSteamID.ToString()).actualCar)
 				{
                     alerta(uplayer, "Entre no veículo para guardá-lo na garagem!");
                     return;
@@ -199,7 +196,7 @@ namespace MundoRP
                     erro(uplayer, "Guarde o seu veículo na garagem primeiro!");
                     return;
                 }
-                vehicleManager.giveVehicle(uplayer, cardId, carTableId, Main.Instance.getNearbyGarage(uplayer));
+                MundoVehicleManager.giveVehicle(uplayer, cardId, carTableId, GarageManager.getNearbyGarage(uplayer));
                 uiClose(uplayer, 17000);
                 sucesso(uplayer, "Veículo retirado da garagem!");
 			}
@@ -207,7 +204,7 @@ namespace MundoRP
             //PARKBUTTON
             if (buttonName == "ParkButton")
             {
-                vehicleManager.clearVehiclesByID(uplayer.CSteamID);
+                MundoVehicleManager.clearVehiclesByID(uplayer.CSteamID);
                 data.updateCar(Main.Instance.vehicleList[uplayer.CSteamID].iv, Main.Instance.vehicleList[uplayer.CSteamID].gv.tableId);
                 sucesso(uplayer, "Você guardou seu veículo na garagem!");
                 mplayer.actualCar = 0;

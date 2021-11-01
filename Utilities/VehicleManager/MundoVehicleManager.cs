@@ -3,33 +3,46 @@ using Rocket.Core.Logging;
 using Rocket.Unturned.Chat;
 using SDG.Unturned;
 using System.Linq;
-using Rocket.API.Collections;
 using UnityEngine;
 using Rocket.Unturned.Player;
 using Steamworks;
 using System;
-using System.Collections.Generic;
-using Rocket.Unturned.Events;
 
 namespace MundoRP
 {
 	public class MundoVehicleManager
 	{
-		NotificationManager Notificator = new NotificationManager();
-		public void createTicket(Vector3 pos, Garage gr)
+		public static void ClearVehicles()
+		{
+			Rocket.Core.Logging.Logger.Log("Clearing vehicles!");
+
+			var cleared = 0;
+			var vehicles = VehicleManager.vehicles;
+			for (int i = vehicles.Count - 1; i >= 0; i--)
+			{
+				var vehicle = vehicles[i];
+				VehicleManager.askVehicleDestroy(vehicle);
+				//VehicleManager.instance.channel.send("tellVehicleDestroy", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, vehicle.instanceID);
+				cleared++;
+
+			}
+			Rocket.Core.Logging.Logger.Log("Veiculos limpados: " + cleared);
+		}
+
+		public static void createTicket(Vector3 pos, Garage gr)
 		{
 			int grID = GetGarageID(gr);
 			Main.Instance.Configuration.Save();
 		}
 
-		public void criarGarage(Garage garage)
+		public static void criarGarage(Garage garage)
 		{
 			Main.Instance.VehicleManager_garagens.Add(garage);
 			Main.Instance.Configuration.Instance.VehicleManager_Garagens.Add(garage);
 			Main.Instance.Configuration.Save();
 		}
 
-		public int GetGarageID(Garage gr)
+		public static int GetGarageID(Garage gr)
 		{
 			for(int i = 0; i < Main.Instance.Configuration.Instance.VehicleManager_Garagens.Count; i++)
 			{
@@ -42,9 +55,9 @@ namespace MundoRP
 			return 0;
 		}
 
-		public void giveVehicle(UnturnedPlayer player, int carIndexInPlayerGarage, int carTableId, Garage garage)
+		public static void giveVehicle(UnturnedPlayer player, int carIndexInPlayerGarage, int carTableId, Garage garage)
 		{
-			MundoPlayer mp = Main.Instance.getPlayerInList(player.CSteamID.ToString());
+			MundoPlayer mp = PlayerManager.getPlayerInList(player.CSteamID.ToString());
 			GarageVehicle gv = mp.vehicleList[carIndexInPlayerGarage-1];
 
 			if (Main.Instance.vehicleList.ContainsKey(player.CSteamID))
@@ -56,10 +69,11 @@ namespace MundoRP
 			{
 				//SETTANDO AS CONFIGS DO VEHICLE
 				player.GiveVehicle(gv.vehicleId);
+				VehicleManager.spawnLockedVehicleForPlayerV2(gv.vehicleId, new Vector3(garage.x, getVehicleBySteamID(player.CSteamID).transform.position.y, garage.z), Quaternion.Euler(garage.ang.x, garage.ang.y, garage.ang.z), player.Player);
 				InteractableVehicle PlayerVehicle = VehicleManager.vehicles[VehicleManager.vehicles.Count() - 1];
 				Main.Instance.vehicleList.Add(player.CSteamID, new Vehicle(PlayerVehicle, gv)); //ADICIONANDO O CARRO À LISTA DE VEÍCULOS DO SERVER
-				getVehicleBySteamID(player.CSteamID).transform.position = new Vector3(garage.x, getVehicleBySteamID(player.CSteamID).transform.position.y, garage.z);
-				getVehicleBySteamID(player.CSteamID).transform.eulerAngles = garage.ang;
+				//getVehicleBySteamID(player.CSteamID).transform.position = ;
+				//getVehicleBySteamID(player.CSteamID).transform.eulerAngles = garage.ang;
 
 
 				VehicleManager.sendVehicleBatteryCharge(PlayerVehicle, gv.battery);
@@ -69,23 +83,23 @@ namespace MundoRP
 				VehicleManager.sendVehicleHealth(PlayerVehicle, gv.health);
 				PlayerVehicle.tellHealth(gv.health);
 
-				VehicleManager.instance.channel.send("tellVehicleLock", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, new object[]
-				{
-					getVehicleBySteamID(player.CSteamID).instanceID,
-					player.CSteamID,
-					player.Player.quests.groupID,
-					true
-				});
+				//VehicleManager.instance.channel.send("tellVehicleLock", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, new object[]
+				//{
+				//	getVehicleBySteamID(player.CSteamID).instanceID,
+				//	player.CSteamID,
+				//	player.Player.quests.groupID,
+				//	true
+				//});
 			mp.actualCar = carTableId;
 			}
 			catch (Exception ex)
 			{
-				Notificator.erro(player);
+				NotificationManager.erro(player);
 				Rocket.Core.Logging.Logger.Log(ex);
 			}
 		}
 
-		public InteractableVehicle getVehicleBySteamID(CSteamID steamID)
+		public static InteractableVehicle getVehicleBySteamID(CSteamID steamID)
 		{
 			foreach (CSteamID id in Main.Instance.vehicleList.Keys)
 			{
@@ -97,19 +111,22 @@ namespace MundoRP
 			return null;
 		}
 
-		public void clearVehiclesByID(CSteamID steamID)
+		public static void clearVehiclesByID(CSteamID steamID)
 		{
 			getVehicleBySteamID(steamID).forceRemoveAllPlayers();
-			VehicleManager.instance.channel.send("tellVehicleDestroy", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, getVehicleBySteamID(steamID).instanceID);
+			VehicleManager.askVehicleDestroy(getVehicleBySteamID(steamID));
+
+			//VehicleManager.instance.channel.send("tellVehicleDestroy", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, getVehicleBySteamID(steamID).instanceID);
 		}
 		
-		public void clearVehicleByVehicle(InteractableVehicle vehicle)
+		public static void clearVehicleByVehicle(InteractableVehicle vehicle)
 		{
 			vehicle.forceRemoveAllPlayers();
-			VehicleManager.instance.channel.send("tellVehicleDestroy", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, vehicle.instanceID);
+			VehicleManager.askVehicleDestroy(vehicle);
+			//VehicleManager.instance.channel.send("tellVehicleDestroy", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, vehicle.instanceID);
 		}
 
-		public bool CanClearVehicle(InteractableVehicle vehicle)
+		public static bool CanClearVehicle(InteractableVehicle vehicle)
 		{
 			if (vehicle.passengers.Any(p => p.player != null) || vehicle.asset.engine == EEngine.TRAIN)
 			{
@@ -149,7 +166,7 @@ namespace MundoRP
 			return false;
 		}
 
-		public string parse(float num)
+		public static string parse(float num)
 		{
 			return num.ToString().Replace(",", ".");
 		}

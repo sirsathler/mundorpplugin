@@ -4,19 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Rocket.API;
+using Rocket.Core.Plugins;
 using UnityEngine;
 
 namespace MundoRP
 {
-	public class Poste
+	public class BusStop
 	{
-		public string name { get; set; }
-		public int x { get; set; }
-		public int y { get; set; }
-		public int z { get; set; }
+		public string name;
 
+		public int x;
 
-		public Poste(string Name, float X, float Y, float Z)
+		public int y;
+
+		public int z;
+
+		public BusStop(string Name, float X, float Y, float Z)
 		{
 			name = Name;
 			x = Convert.ToInt32(X);
@@ -24,6 +28,6 @@ namespace MundoRP
 			z = Convert.ToInt32(Z);
 		}
 
-		private Poste() { }
+		private BusStop() { }
 	}
 }

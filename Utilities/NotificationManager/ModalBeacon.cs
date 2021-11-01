@@ -12,10 +12,10 @@ namespace MundoRP
 		public Vector3 position;
 		public float range;
 		public ushort id;
-		public ModalBeacon(Vector3 pos, float ran, ushort identificator)
+		public ModalBeacon(Vector3 pos, float rang, ushort identificator)
 		{
 			position = pos;
-			range = ran;
+			range = rang;
 			id = identificator;
 		}
 	}

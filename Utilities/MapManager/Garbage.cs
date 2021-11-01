@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MundoRP
 {
-	public class LataDeLixo
+	public class Garbage
 	{
 		public DateTime Cooldown;
 
@@ -13,14 +13,14 @@ namespace MundoRP
 		public float y;
 		public float z;
 
-		public LataDeLixo(float X, float Y, float Z)
+		public Garbage(float X, float Y, float Z)
 		{
-			id = Main.Instance.Reciclador_latasdelixo.Count + 1;
+			id = Main.Instance.ObjList_Garbages.Count + 1;
 			x = Convert.ToInt32(X);
 			y = Convert.ToInt32(Y);
 			z = Convert.ToInt32(Z);
 		}
 
-		private LataDeLixo() { }
+		private Garbage() { }
 	}
 }
