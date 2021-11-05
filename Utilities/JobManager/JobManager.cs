@@ -7,18 +7,28 @@ using Rocket.Core.Logging;
 
 namespace MundoRP
 {
-	public class JobManager
+	public static class JobManager
 	{
-
-		public List<Job> InjectJobList()
+		public static Job getJobByName(string name)
 		{
-			Main.Instance.jobList.Clear();
-			foreach (Job job in Main.Instance.Configuration.Instance.JobsList)
+			foreach(Job job in Main.Instance.JobList_Jobs)
 			{
-				Main.Instance.jobList.Add(job);
-				Logger.Log(job.name);
+				if(name == job.name)
+				{
+					return job;
+				}
 			}
 			return null;
+		}
+
+		public static void injectJobList()
+		{
+			Main.Instance.JobList_Jobs.Clear();
+			Main.Instance.JobList_Jobs.Add(new Job("Desempregado", 0, 0, "", "", "", "", ""));
+
+			List<Job> newJobs = DataManager.getJobsFromDB();
+
+			Main.Instance.JobList_Jobs = newJobs == null ? new List<Job>() : newJobs;
 		}
 	}
 }

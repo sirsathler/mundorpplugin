@@ -12,7 +12,7 @@ namespace MundoRP
 {
 	public class MundoVehicleManager
 	{
-		public static void ClearVehicles()
+		public static void clearVehicles()
 		{
 			Rocket.Core.Logging.Logger.Log("Clearing vehicles!");
 
@@ -35,18 +35,31 @@ namespace MundoRP
 			Main.Instance.Configuration.Save();
 		}
 
-		public static void criarGarage(Garage garage)
+		public static void createNewGarage(UnturnedPlayer Player, Garage garage)
 		{
-			Main.Instance.VehicleManager_garagens.Add(garage);
-			Main.Instance.Configuration.Instance.VehicleManager_Garagens.Add(garage);
+			foreach (Garage gr in Main.Instance.MundoVehicle_Garages)
+			{
+				if (Vector3.Distance(Player.Position, new Vector3(gr.x, gr.y, gr.z)) < Main.Instance.Configuration.Instance.Interaction_Range)
+				{
+					NotificationManager.erro(Player, "Muito perto de outra garagem!");
+					return;
+				}
+				if (gr.name == garage.name)
+				{
+					NotificationManager.erro(Player, "Já existe uma garagem com esse nome!");
+					return;
+				}
+			}
+			Main.Instance.MundoVehicle_Garages.Add(garage);
+			Main.Instance.Configuration.Instance.MundoVehicle_Garages.Add(garage);
 			Main.Instance.Configuration.Save();
 		}
 
 		public static int GetGarageID(Garage gr)
 		{
-			for(int i = 0; i < Main.Instance.Configuration.Instance.VehicleManager_Garagens.Count; i++)
+			for(int i = 0; i < Main.Instance.Configuration.Instance.MundoVehicle_Garages.Count; i++)
 			{
-				if(Main.Instance.Configuration.Instance.VehicleManager_Garagens[i].nome == gr.nome)
+				if(Main.Instance.Configuration.Instance.MundoVehicle_Garages[i].name == gr.name)
 				{
 					return i;
 				}
@@ -60,20 +73,18 @@ namespace MundoRP
 			MundoPlayer mp = PlayerManager.getPlayerInList(player.CSteamID.ToString());
 			GarageVehicle gv = mp.vehicleList[carIndexInPlayerGarage-1];
 
-			if (Main.Instance.vehicleList.ContainsKey(player.CSteamID))
+			if (Main.Instance.MundoVehicle_Vehicles.ContainsKey(player.CSteamID))
 			{
 				clearVehiclesByID(player.CSteamID);
-				Main.Instance.vehicleList.Remove(player.CSteamID);
+				Main.Instance.MundoVehicle_Vehicles.Remove(player.CSteamID);
 			}
 			try
 			{
-				//SETTANDO AS CONFIGS DO VEHICLE
 				player.GiveVehicle(gv.vehicleId);
-				VehicleManager.spawnLockedVehicleForPlayerV2(gv.vehicleId, new Vector3(garage.x, getVehicleBySteamID(player.CSteamID).transform.position.y, garage.z), Quaternion.Euler(garage.ang.x, garage.ang.y, garage.ang.z), player.Player);
 				InteractableVehicle PlayerVehicle = VehicleManager.vehicles[VehicleManager.vehicles.Count() - 1];
-				Main.Instance.vehicleList.Add(player.CSteamID, new Vehicle(PlayerVehicle, gv)); //ADICIONANDO O CARRO À LISTA DE VEÍCULOS DO SERVER
-				//getVehicleBySteamID(player.CSteamID).transform.position = ;
-				//getVehicleBySteamID(player.CSteamID).transform.eulerAngles = garage.ang;
+				Main.Instance.MundoVehicle_Vehicles.Add(player.CSteamID, new Vehicle(PlayerVehicle, gv)); //ADICIONANDO O CARRO À LISTA DE VEÍCULOS DO SERVER
+				getVehicleBySteamID(player.CSteamID).transform.position = new Vector3(garage.x, getVehicleBySteamID(player.CSteamID).transform.position.y, garage.z);
+				getVehicleBySteamID(player.CSteamID).transform.eulerAngles = garage.angle;
 
 
 				VehicleManager.sendVehicleBatteryCharge(PlayerVehicle, gv.battery);
@@ -83,14 +94,15 @@ namespace MundoRP
 				VehicleManager.sendVehicleHealth(PlayerVehicle, gv.health);
 				PlayerVehicle.tellHealth(gv.health);
 
-				//VehicleManager.instance.channel.send("tellVehicleLock", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, new object[]
-				//{
-				//	getVehicleBySteamID(player.CSteamID).instanceID,
-				//	player.CSteamID,
-				//	player.Player.quests.groupID,
-				//	true
-				//});
-			mp.actualCar = carTableId;
+				VehicleManager.instance.channel.send("tellVehicleLock", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, new object[]
+				{
+					getVehicleBySteamID(player.CSteamID).instanceID,
+					player.CSteamID,
+					player.Player.quests.groupID,
+					true
+				});
+
+				mp.actualCar = carTableId;
 			}
 			catch (Exception ex)
 			{
@@ -101,11 +113,11 @@ namespace MundoRP
 
 		public static InteractableVehicle getVehicleBySteamID(CSteamID steamID)
 		{
-			foreach (CSteamID id in Main.Instance.vehicleList.Keys)
+			foreach (CSteamID id in Main.Instance.MundoVehicle_Vehicles.Keys)
 			{
 				if (id == steamID)
 				{
-					return Main.Instance.vehicleList[id].iv;
+					return Main.Instance.MundoVehicle_Vehicles[id].iv;
 				}
 			}
 			return null;

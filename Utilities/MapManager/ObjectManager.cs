@@ -14,6 +14,27 @@ namespace MundoRP
 		public List<BusStop> BusStops;
 		public List<FuseBox> FuseBoxes;
 
+
+		public static void injectObjectList()
+		{
+			ObjectManager objManager = DataManager.getObjectsFromDB();
+
+			Main.Instance.ObjList_Garbages = objManager.Garbages;
+			Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.ObjList_Garbages.Count.ToString() + " Latas de Lixos.");
+
+            Main.Instance.ObjList_Fuses = objManager.FuseBoxes;
+            Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.ObjList_Fuses.Count.ToString() + " Fusíveis.");
+
+            Main.Instance.ObjList_Mailbox = objManager.MailBoxes;
+            Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.ObjList_Mailbox.Count.ToString() + " Caixas de Correios.");
+
+            Main.Instance.ObjList_Dumps = objManager.Dumps;
+            Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.ObjList_Dumps.Count.ToString() + " Aterros Sanitários.");
+
+            Main.Instance.ObjList_BusStops = objManager.BusStops;
+            Rocket.Core.Logging.Logger.Log("Adicionados: " + Main.Instance.ObjList_Dumps.Count.ToString() + " Pontos de Ônibus.");
+		}
+
 		public ObjectManager(List<Dump> dumps, List<Mailbox> mailboxes, List<Garbage> garbages, List<BusStop> busStops, List<FuseBox> fuseBoxes)
 		{
 			Dumps = dumps;

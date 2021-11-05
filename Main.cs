@@ -13,31 +13,26 @@ namespace MundoRP
     public partial class Main : RocketPlugin<Configuration>
     {
         public Dictionary<UnturnedPlayer, ModalBeacon> ModalOpenedPlayers = new Dictionary<UnturnedPlayer, ModalBeacon>();
-        public NotificationManager Notificator = new NotificationManager();
         public List<MundoPlayer> PlayerList = new List<MundoPlayer>();
-        public DataManager Data = new DataManager();
 
-
-
-        //--------------------UTILITIES-------------------------------//
-        DataManager dataManager = new DataManager();
+        //--------------------CLEARS-------------------------------//
 
 
         //--------------------VEHICLE MANAGER-------------------------//
 
-        public Dictionary<CSteamID, Vehicle> vehicleList = new Dictionary<CSteamID, Vehicle>();
-        public List<Garage> VehicleManager_garagens = new List<Garage>();
+        public Dictionary<CSteamID, Vehicle> MundoVehicle_Vehicles = new Dictionary<CSteamID, Vehicle>();
+        public List<Garage> MundoVehicle_Garages = new List<Garage>();
 
         //-------------------JOBS--------------------------//
-
 
         public List<Mailbox> ObjList_Mailbox = new List<Mailbox>();
         public List<BusStop> ObjList_BusStops = new List<BusStop>();
         public List<Garbage> ObjList_Garbages = new List<Garbage>();
-        public List<Dump> ObjList_Dumps = new List<Dump>();
         public List<FuseBox> ObjList_Fuses = new List<FuseBox>();
-        public JobManager jobManager = new JobManager();
-        public List<Job> jobList = new List<Job>();
+        public List<Dump> ObjList_Dumps = new List<Dump>();
+        public List<Job> JobList_Jobs = new List<Job>();
+
+        public List<WorkNPC> NPCList_WorkNPCs = new List<WorkNPC>();
 
 
         public static Main Instance;
@@ -59,16 +54,19 @@ namespace MundoRP
             //EVENTS
             U.Events.OnPlayerConnected += OnPlayerConnected;
             U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
-            EffectManager.onEffectButtonClicked += Notificator.uiButtonClick;
+            EffectManager.onEffectButtonClicked += NotificationManager.uiButtonClick;
+            PlayerInput.onPluginKeyTick += QAClass.qacommand;
 
-            //JOBS
-            jobManager.InjectJobList();
-            
             //HARMONY SETUP
             var Harmony = new Harmony("com.mundorp.patches");
             Harmony.PatchAll();
 
+            //CLEARS
+            Instance.ModalOpenedPlayers.Clear();
+            Instance.PlayerList.Clear();
+
             readData();
+
             Rocket.Core.Logging.Logger.Log("Mundo Roleplay Plugin | Carregado com sucesso!", ConsoleColor.Green);
         }
 		protected override void Unload()
@@ -78,7 +76,7 @@ namespace MundoRP
 
         private void OnPlayerConnected(UnturnedPlayer Player)
 		{
-            MundoPlayer newplayer = dataManager.getPlayerBySteamId(Player.CSteamID);
+            MundoPlayer newplayer = DataManager.getPlayerBySteamId(Player.CSteamID);
             Instance.PlayerList.Add(newplayer);
             NotificationManager.updateHUD(newplayer);
             Rocket.Core.Logging.Logger.Log("Players online atualmente: " + Instance.PlayerList.Count.ToString());
@@ -100,8 +98,6 @@ namespace MundoRP
 			}
 
             Rocket.Core.Logging.Logger.Log(Player.CSteamID.ToString());
-            string playerJob = Data.getPlayerBySteamId(Player.CSteamID).job;
-
         }
     }
 }

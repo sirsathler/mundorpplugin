@@ -10,14 +10,15 @@ namespace MundoRP
 	public class MundoPlayer
 	{
 		public int level, xp;
-		public string username, job;
+		public string username;
+		public Job job;
 		public CSteamID steamid;
 		public bool premium;
 		public float mp, rp;
 		public int actualCar;
 		public List<GarageVehicle> vehicleList;
 
-		public MundoPlayer(string Username, CSteamID SteamId, int Level, int Xp, string Job, bool Premium, float Mp, float Rp, List<GarageVehicle> vlist)
+		public MundoPlayer(string Username, CSteamID SteamId, int Level, int Xp, Job Job, bool Premium, float Mp, float Rp, List<GarageVehicle> vlist)
 		{
 			username = Username;
 			steamid = SteamId;

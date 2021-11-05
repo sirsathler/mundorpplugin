@@ -47,7 +47,7 @@
     <Compile Include="Utilities\JobManager\JobManager.cs" />
     <Compile Include="Utilities\MapManager\Dump.cs" />
     <Compile Include="Utilities\MapManager\Mailbox.cs" />
-    <Compile Include="Utilities\MapManager\Commands.cs" />
+    <Compile Include="Utilities\MapManager\MapManager.cs" />
     <Compile Include="Utilities\MapManager\Garbage.cs" />
     <Compile Include="Utilities\MapManager\ObjectManager.cs" />
     <Compile Include="Utilities\MapManager\BusStop.cs" />
@@ -55,6 +55,8 @@
     <Compile Include="Utilities\NotificationManager\ModalBeacon.cs" />
     <Compile Include="Utilities\NotificationManager\NotificationManager.cs" />
     <Compile Include="Utilities\GarageManager\GarageVehicle.cs" />
+    <Compile Include="Utilities\NPCManager\NPCManager.cs" />
+    <Compile Include="Utilities\NPCManager\WorkNPC.cs" />
     <Compile Include="Utilities\PlayerManager\Player.cs" />
     <Compile Include="Utilities\GarageManager\Vehicle.cs" />
     <Compile Include="Utilities\PlayerManager\PlayerManager.cs" />

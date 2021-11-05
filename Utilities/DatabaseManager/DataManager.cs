@@ -7,7 +7,7 @@ namespace MundoRP
 {
 	public class DataManager
 	{
-        public string connectionString = "server=" + Environments.server + ";port=" + Environments.port + ";User Id=" + Environments.user + ";password=" + Environments.password;
+        public static string connectionString = "server=" + Environments.server + ";port=" + Environments.port + ";User Id=" + Environments.user + ";password=" + Environments.password;
 
         public string openDB()
         {
@@ -23,7 +23,7 @@ namespace MundoRP
                 return ex.ToString();
             }
         }
-        public void truncateTable(string table)
+        public static void truncateTable(string table)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace MundoRP
                 Rocket.Core.Logging.Logger.Log(ex.ToString());
             }
         }
-        public int count(string table)
+        public static int count(string table)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace MundoRP
         
         //GETTERS====================================================================================================================
 
-        public MundoPlayer getPlayerBySteamId(Steamworks.CSteamID id)
+        public static MundoPlayer getPlayerBySteamId(Steamworks.CSteamID id)
         {
             try
             {
@@ -77,7 +77,10 @@ namespace MundoRP
                 bool premium = false;
                 premium = Convert.ToDateTime(dr.GetString(5)) > DateTime.Now ? true : false;
                 List<GarageVehicle> garageVehicles = getVehiclesBySteamId(id);
-                MundoPlayer player = new MundoPlayer(dr.GetString(0), id, Convert.ToInt32(dr.GetString(2)), Convert.ToInt32(dr.GetString(3)), dr.GetString(4), premium, (float)Convert.ToDouble(dr.GetString(7)), (float)Convert.ToDouble(dr.GetString(6)), garageVehicles);
+                MundoPlayer player = new MundoPlayer(dr.GetString(0), id, Convert.ToInt32(dr.GetString(2)), Convert.ToInt32(dr.GetString(3)), JobManager.getJobByName(dr.GetString(4)), premium, (float)Convert.ToDouble(dr.GetString(7)), (float)Convert.ToDouble(dr.GetString(6)), garageVehicles);
+
+                player.job = player.job == null ? JobManager.getJobByName("desempregado") : JobManager.getJobByName(dr.GetString(4));
+
                 sqlConn.Close();
                 
                 return player;
@@ -90,7 +93,7 @@ namespace MundoRP
             }
         }
 
-        public List<GarageVehicle> getVehiclesBySteamId(Steamworks.CSteamID id)
+        public static List<GarageVehicle> getVehiclesBySteamId(Steamworks.CSteamID id)
 		{
             List<GarageVehicle> playerVehicles = new List<GarageVehicle>();
             try
@@ -125,7 +128,7 @@ namespace MundoRP
                         string vColor= dr.GetString(5);
                         int TableId = Convert.ToUInt16(dr.GetString(6));
 
-                        List<VehicleDebt> vDebts = GetVehicleDebts(TableId);
+                        List<VehicleDebt> vDebts = getVehicleDebts(TableId);
 
                         playerVehicles.Add(new GarageVehicle(TableId, owner, vId, vColor, date, bat, hp, gas, vname, vDebts));
                     }
@@ -142,7 +145,7 @@ namespace MundoRP
             }
         }
 
-        public List<VehicleDebt> GetVehicleDebts(int vehicleTableId)
+        public static List<VehicleDebt> getVehicleDebts(int vehicleTableId)
 		{
             MySqlConnection sqlConne = new MySqlConnection(connectionString);
             sqlConne.Open();
@@ -157,7 +160,6 @@ namespace MundoRP
             {
                 while (dr.Read())
                 {
-                    Rocket.Core.Logging.Logger.Log(((float)Convert.ToUInt32(dr.GetString("Debt_Value"))).ToString());
                     newVehicleDebts.Add(new VehicleDebt(dr.GetString("Debt_Description"), (float)Convert.ToUInt32(dr.GetString("Debt_Value"))));
                 }
                 dr.NextResult();
@@ -167,7 +169,39 @@ namespace MundoRP
             return newVehicleDebts;
         }
         
-        public ObjectManager getObjectsFromDB()
+        public static List<Job> getJobsFromDB()
+		{
+			try
+			{
+                MySqlConnection sqlConne = new MySqlConnection(connectionString);
+                sqlConne.Open();
+                MySqlCommand sqlCmd = new MySqlCommand("SELECT * FROM " + Environments.database + ".game_jobs", sqlConne);
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                MySqlDataReader dr = sqlCmd.ExecuteReader();
+
+
+                List<Job> newJobList = new List<Job>();
+                int i = 0;
+                while (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        newJobList.Add(new Job(dr.GetString("Job_Name"), (float)Convert.ToUInt32(dr.GetString("Job_Salary")), Convert.ToInt32(dr.GetString("Job_MinLvl")), dr.GetString("Job_Difficulty"), dr.GetString("Job_Arg0"), dr.GetString("Job_Arg1"), dr.GetString("Job_Arg2"), dr.GetString("Job_Arg3")));
+                    }
+                    dr.NextResult();
+                    i++;
+                }
+                sqlConne.Close();
+                return newJobList;
+			}
+            catch(Exception ex)
+			{
+                Rocket.Core.Logging.Logger.Log(ex.ToString());
+                return null;
+			}
+        }
+        
+        public static ObjectManager getObjectsFromDB()
         {
             List<Dump> Dumps = new List<Dump>();
             List<Mailbox> MailBoxes = new List<Mailbox>();
@@ -221,9 +255,11 @@ namespace MundoRP
             }
         }
 
-        public bool updateObjects(ObjectManager obj)
+        public static bool updateObjects()
 		{
-			try
+            ObjectManager obj = new ObjectManager(Main.Instance.ObjList_Dumps, Main.Instance.ObjList_Mailbox, Main.Instance.ObjList_Garbages, Main.Instance.ObjList_BusStops, Main.Instance.ObjList_Fuses);
+
+            try
 			{
                 truncateTable("game_objects");
 				MySqlConnection sqlConn = new MySqlConnection(connectionString);
@@ -267,8 +303,7 @@ namespace MundoRP
 			}
 		}
 
-        //SETTERS====================================================================================================================
-        public bool updateCar(InteractableVehicle vh, int id)
+        public static bool updateCar(InteractableVehicle vh, int id)
 		{
             MySqlConnection sqlConn = new MySqlConnection(connectionString);
             sqlConn.Open();
@@ -279,7 +314,7 @@ namespace MundoRP
             return false;
         }
 
-        public bool addToDB(MundoPlayer player)
+        public static bool addToDB(MundoPlayer player)
 		{
             MySqlConnection sqlConn = new MySqlConnection(connectionString);
             sqlConn.Open();
