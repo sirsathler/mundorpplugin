@@ -15,15 +15,10 @@ namespace MundoRP
         public Dictionary<UnturnedPlayer, ModalBeacon> ModalOpenedPlayers = new Dictionary<UnturnedPlayer, ModalBeacon>();
         public List<MundoPlayer> PlayerList = new List<MundoPlayer>();
 
-        //--------------------CLEARS-------------------------------//
-
-
-        //--------------------VEHICLE MANAGER-------------------------//
 
         public Dictionary<CSteamID, Vehicle> MundoVehicle_Vehicles = new Dictionary<CSteamID, Vehicle>();
         public List<Garage> MundoVehicle_Garages = new List<Garage>();
 
-        //-------------------JOBS--------------------------//
 
         public List<Mailbox> ObjList_Mailbox = new List<Mailbox>();
         public List<BusStop> ObjList_BusStops = new List<BusStop>();
@@ -37,16 +32,6 @@ namespace MundoRP
 
         public static Main Instance;
 
-        //
-        //
-        //
-        // 
-        //  ON PLUGIN LOAD                =========================================
-        //
-        //
-        //
-        //
-
         protected override void Load()
         {
             Instance = this;
@@ -54,7 +39,7 @@ namespace MundoRP
             //EVENTS
             U.Events.OnPlayerConnected += OnPlayerConnected;
             U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
-            EffectManager.onEffectButtonClicked += NotificationManager.uiButtonClick;
+            EffectManager.onEffectButtonClicked += ClickerManager.uiButtonClick;
             PlayerInput.onPluginKeyTick += QAClass.qacommand;
 
             //HARMONY SETUP
@@ -78,7 +63,8 @@ namespace MundoRP
 		{
             MundoPlayer newplayer = DataManager.getPlayerBySteamId(Player.CSteamID);
             Instance.PlayerList.Add(newplayer);
-            NotificationManager.updateHUD(newplayer);
+
+            InterfaceManager.updateHUD(newplayer);
             Rocket.Core.Logging.Logger.Log("Players online atualmente: " + Instance.PlayerList.Count.ToString());
             foreach(MundoPlayer player in Main.Instance.PlayerList)
 			{
@@ -90,7 +76,7 @@ namespace MundoRP
 		private void OnPlayerDisconnected(UnturnedPlayer Player)
 		{
             Instance.ModalOpenedPlayers.Remove(Player);
-            int playerId = PlayerManager.getPlayerIdInList(Player.CSteamID.ToString());
+            int playerId = MundoPlayer.getPlayerIdInList(Player.CSteamID.ToString());
             if(playerId != -1)
 			{
                 Instance.PlayerList.RemoveAt(playerId);

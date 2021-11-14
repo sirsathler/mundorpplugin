@@ -19,6 +19,7 @@ namespace MundoRP
 			x = Convert.ToInt32(X);
 			y = Convert.ToInt32(Y);
 			z = Convert.ToInt32(Z);
+			Cooldown = DateTime.Now;
 		}
 
 		private Garbage() { }

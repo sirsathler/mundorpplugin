@@ -30,36 +30,36 @@ namespace MundoRP
 
 			if (command[0] == "setdata")
 			{
-				NotificationManager.alerta(Player, "Adicionando dados no banco!");
+				InterfaceManager.alerta(Player, "Adicionando dados no banco!");
 				try
 				{
 					if (Main.Instance.setData())
 					{
-						NotificationManager.sucesso(Player, "Banco de Dados atualizado com sucesso!");
+						InterfaceManager.sucesso(Player, "Banco de Dados atualizado com sucesso!");
 					}
 				}
 				catch (Exception ex)
 				{
-					NotificationManager.erro(Player);
+					InterfaceManager.erro(Player);
 					Logger.Log(ex);
 					return;
 				}
-				NotificationManager.sucesso(Player);
+				InterfaceManager.sucesso(Player);
 			}
 			else if (command[0] == "readdata")
 			{
-				NotificationManager.alerta(Player, "Lendo dados no banco!");
+				InterfaceManager.alerta(Player, "Lendo dados no banco!");
 				try
 				{
 					Main.Instance.readData();
 				}
 				catch (Exception ex)
 				{
-					NotificationManager.erro(Player);
+					InterfaceManager.erro(Player);
 					Logger.Log(ex);
 					return;
 				}
-				NotificationManager.sucesso(Player);
+				InterfaceManager.sucesso(Player);
 			}
 		}
 	}

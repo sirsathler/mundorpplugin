@@ -77,9 +77,9 @@ namespace MundoRP
                 bool premium = false;
                 premium = Convert.ToDateTime(dr.GetString(5)) > DateTime.Now ? true : false;
                 List<GarageVehicle> garageVehicles = getVehiclesBySteamId(id);
-                MundoPlayer player = new MundoPlayer(dr.GetString(0), id, Convert.ToInt32(dr.GetString(2)), Convert.ToInt32(dr.GetString(3)), JobManager.getJobByName(dr.GetString(4)), premium, (float)Convert.ToDouble(dr.GetString(7)), (float)Convert.ToDouble(dr.GetString(6)), garageVehicles);
+                MundoPlayer player = new MundoPlayer(dr.GetString(0), id, Convert.ToInt32(dr.GetString(2)), Convert.ToInt32(dr.GetString(3)), dr.GetString(4), premium, (float)Convert.ToDouble(dr.GetString(7)), (float)Convert.ToDouble(dr.GetString(6)), garageVehicles);
 
-                player.job = player.job == null ? JobManager.getJobByName("desempregado") : JobManager.getJobByName(dr.GetString(4));
+                player.jobName = player.jobName == null ? "desempregado" : dr.GetString(4);
 
                 sqlConn.Close();
                 
@@ -318,7 +318,7 @@ namespace MundoRP
 		{
             MySqlConnection sqlConn = new MySqlConnection(connectionString);
             sqlConn.Open();
-            MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + Environments.database + ".server_players (Player_SteamId, Player_Level, Player_Xp, Player_Job, Player_MP, Player_RP) VALUES (" + player.steamid + ", " + player.level + ", " + player.xp + ", " + player.job + ", " + player.mp + ", " + player.rp + " ON DUPLICATE KEY UPDATE ", sqlConn);
+            MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + Environments.database + ".server_players (Player_SteamId, Player_Level, Player_Xp, Player_Job, Player_MP, Player_RP) VALUES (" + player.steamid + ", " + player.level + ", " + player.xp + ", " + player.jobName + ", " + player.mp + ", " + player.rp + " ON DUPLICATE KEY UPDATE ", sqlConn);
             sqlCmd.CommandType = System.Data.CommandType.Text;
             sqlCmd.ExecuteNonQuery();
             sqlConn.Close();

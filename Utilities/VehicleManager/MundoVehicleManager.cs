@@ -41,12 +41,12 @@ namespace MundoRP
 			{
 				if (Vector3.Distance(Player.Position, new Vector3(gr.x, gr.y, gr.z)) < Main.Instance.Configuration.Instance.Interaction_Range)
 				{
-					NotificationManager.erro(Player, "Muito perto de outra garagem!");
+					InterfaceManager.erro(Player, "Muito perto de outra garagem!");
 					return;
 				}
 				if (gr.name == garage.name)
 				{
-					NotificationManager.erro(Player, "Já existe uma garagem com esse nome!");
+					InterfaceManager.erro(Player, "Já existe uma garagem com esse nome!");
 					return;
 				}
 			}
@@ -70,7 +70,7 @@ namespace MundoRP
 
 		public static void giveVehicle(UnturnedPlayer player, int carIndexInPlayerGarage, int carTableId, Garage garage)
 		{
-			MundoPlayer mp = PlayerManager.getPlayerInList(player.CSteamID.ToString());
+			MundoPlayer mp = MundoPlayer.getPlayerInList(player.CSteamID.ToString());
 			GarageVehicle gv = mp.vehicleList[carIndexInPlayerGarage-1];
 
 			if (Main.Instance.MundoVehicle_Vehicles.ContainsKey(player.CSteamID))
@@ -106,7 +106,9 @@ namespace MundoRP
 			}
 			catch (Exception ex)
 			{
-				NotificationManager.erro(player);
+
+
+				InterfaceManager.erro(player);
 				Rocket.Core.Logging.Logger.Log(ex);
 			}
 		}

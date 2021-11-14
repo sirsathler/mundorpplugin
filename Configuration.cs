@@ -9,6 +9,9 @@ namespace MundoRP
 	{
 		[XmlElement(ElementName = "EffectID_NewWorkModal")]
 		public short EffectID_NewWorkModal;
+
+		[XmlElement(ElementName = "EffectID_Hint")]
+		public short EffectID_Hint;
 		
 		[XmlElement(ElementName = "EffectID_Garage")]
 		public short EffectID_Garage;
@@ -33,12 +36,12 @@ namespace MundoRP
 				
 		[XmlElement(ElementName = "EffectID_Exp")]
 		public short EffectID_Exp;	
-		
-		[XmlElement(ElementName = "EffectID_Hint")]
-		public short EffectID_Hint;
-		
+
 		[XmlElement(ElementName = "Interaction_Range")]
 		public float Interaction_Range;	
+
+		[XmlElement(ElementName = "Recicladores_Cooldown")]
+		public float Recicladores_Cooldown;	
 
 
 
@@ -60,16 +63,14 @@ namespace MundoRP
 			EffectID_Level = 14005;
 
 			EffectID_HUD = 14006;
-			EffectID_Hint = 14007;
 
 			EffectID_Garage = 14010;
 			EffectID_Park = 14011;
 			EffectID_NewWorkModal = 14020;
+			EffectID_Hint = 14021;
 			
-
-
-
 			Interaction_Range = 2f;
+			Recicladores_Cooldown = 5;
 		}
 	}
 }

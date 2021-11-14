@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MundoRP
 {
-	public class NotificationManager
+	public class InterfaceManager
 	{
         public static Configuration config = Main.Instance.Configuration.Instance;
         public static void WorkHUD(MundoPlayer mplayer, Job job)
@@ -23,6 +23,14 @@ namespace MundoRP
             EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Work_Arg2", job.arg2);
             EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Work_Arg3", job.arg3);
             uplayer.Player.serversideSetPluginModal(true);
+
+            if(mplayer.jobName == job.name)
+			{
+                EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "ActionLabel", "Trabalhar!");
+                return;
+			}
+            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "ActionLabel", "Aceitar Emprego!");
+            return;
         }
 
         public static void GarageHUD(MundoPlayer mplayer, UnturnedPlayer uplayer)
@@ -74,16 +82,9 @@ namespace MundoRP
 
 		public static void parkHUD(UnturnedPlayer uplayer)
 		{
-            uiClose(uplayer, Convert.ToUInt16(config.EffectID_Park));
+            ModalManager.uiClose(uplayer, Convert.ToUInt16(config.EffectID_Park));
             EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Park), config.EffectID_Park, uplayer.SteamPlayer().transportConnection, false);
             uplayer.Player.serversideSetPluginModal(true);
-        }
-
-        public static void createModal(UnturnedPlayer uplayer, Vector3 modalPosition, short id)
-		{
-            Rocket.Core.Logging.Logger.Log("Creating modal!");
-            ModalBeacon modalb = new ModalBeacon(modalPosition, Main.Instance.Configuration.Instance.Interaction_Range, Convert.ToUInt16(id));
-            Main.Instance.ModalOpenedPlayers.Add(uplayer, modalb);
         }
 
 
@@ -93,7 +94,7 @@ namespace MundoRP
         public static void updateHUD(MundoPlayer player)
 		{
             UnturnedPlayer uplayer = UnturnedPlayer.FromCSteamID(player.steamid);
-            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_HUD), Convert.ToInt16(config.EffectID_HUD), uplayer.SteamPlayer().transportConnection, false, player.level.ToString(), player.xp.ToString(), player.rp.ToString(), player.job.name);
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_HUD), Convert.ToInt16(config.EffectID_HUD), uplayer.SteamPlayer().transportConnection, false, player.level.ToString(), player.xp.ToString(), player.rp.ToString(), player.jobName);
 		}
 
         //SUCESSO!
@@ -116,6 +117,11 @@ namespace MundoRP
             EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Error), config.EffectID_Error, player.SteamPlayer().transportConnection, false, param.ToUpper());
         }
 
+        public static void erroSintaxe(UnturnedPlayer player)
+        {
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Error), config.EffectID_Error, player.SteamPlayer().transportConnection, false, "Erro de Sintaxe!");
+        }
+
         //ALERTA!
         public static void alerta(UnturnedPlayer player, string param)
         {
@@ -132,80 +138,14 @@ namespace MundoRP
         public static void lvl(UnturnedPlayer player)
         {
             EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Level), config.EffectID_Level, player.SteamPlayer().transportConnection, false, "você passou de nível!".ToUpper());
-        }
-
-
-
-
-        //================================ UI MANAGER =============================================== //
-
-        public static void uiClose(UnturnedPlayer uplayer, ushort id)
-		{
-            EffectManager.askEffectClearByID(id, uplayer.SteamPlayer().transportConnection);
-            uplayer.Player.serversideSetPluginModal(false);
-        }
-
-        public static void uiButtonClick(Player player, string buttonName)
+        }        
+        
+        public static void hintJob(UnturnedPlayer player, string text, string command)
         {
-            UnturnedPlayer uplayer = UnturnedPlayer.FromPlayer(player);
-            MundoPlayer mplayer = PlayerManager.getPlayerInList(uplayer.CSteamID.ToString());
-
-            //GARAGE================================
-            if (buttonName == "CloseButton")
-            {
-                player.serversideSetPluginModal(false);
-                EffectManager.askEffectClearByID(Convert.ToUInt16(config.EffectID_Garage), uplayer.SteamPlayer().transportConnection);
-                EffectManager.askEffectClearByID(Convert.ToUInt16(config.EffectID_Park), uplayer.SteamPlayer().transportConnection);
-                EffectManager.askEffectClearByID(Convert.ToUInt16(config.EffectID_NewWorkModal), uplayer.SteamPlayer().transportConnection);
-                
-                return;
-            }
-
-            //Car#1
-            if (buttonName.Substring(0,4) == "Car#")
-			{
-                int cardId = Convert.ToInt32(buttonName.Substring(4, 1));
-                mplayer = PlayerManager.getPlayerInList(uplayer.CSteamID.ToString());
-                if (cardId > mplayer.vehicleList.Count)
-				{
-                    erro(uplayer, "Você não possui veículos nessa vaga!");
-                    return;
-				}
-                if (mplayer.vehicleList[cardId - 1].vehicleDebts.Count != 0)
-				{
-                    erro(uplayer, "Veículo com débitos! Procure uma prefeitura!");
-                    return;
-				}
-
-                int carTableId = mplayer.vehicleList[Convert.ToInt32(buttonName.Substring(4, 1)) - 1].tableId;
-
-                if (carTableId == PlayerManager.getPlayerInList(uplayer.CSteamID.ToString()).actualCar)
-				{
-                    alerta(uplayer, "Entre no veículo para guardá-lo na garagem!");
-                    return;
-                }
-                if (mplayer.actualCar != 0)
-				{
-                    erro(uplayer, "Guarde o seu veículo na garagem primeiro!");
-                    return;
-                }
-                MundoVehicleManager.giveVehicle(uplayer, cardId, carTableId, GarageManager.getNearbyGarage(uplayer));
-                uiClose(uplayer, Convert.ToUInt16(config.EffectID_Garage));
-                sucesso(uplayer, "Veículo retirado da garagem!");
-			}
-            //======================================//
-            //PARKBUTTON
-            if (buttonName == "ParkButton")
-            {
-                MundoVehicleManager.clearVehiclesByID(uplayer.CSteamID);
-                DataManager.updateCar(Main.Instance.MundoVehicle_Vehicles[uplayer.CSteamID].iv, Main.Instance.MundoVehicle_Vehicles[uplayer.CSteamID].gv.tableId);
-                mplayer.actualCar = 0;
-                uiClose(uplayer, Convert.ToUInt16(config.EffectID_Park));
-                sucesso(uplayer, "Você guardou seu veículo na garagem!");
-                return;
-            }
-
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Hint), config.EffectID_Hint, player.SteamPlayer().transportConnection, false);
+            EffectManager.sendUIEffectText(config.EffectID_Hint, player.SteamPlayer().transportConnection, true, "Hint_Title", "Dica de Trabalho");
+            EffectManager.sendUIEffectText(config.EffectID_Hint, player.SteamPlayer().transportConnection, true, "Hint_Text", text);
+            EffectManager.sendUIEffectText(config.EffectID_Hint, player.SteamPlayer().transportConnection, true, "Hint_Command", command);
         }
-        //========================= UI METHODS ======================================================== //
     }
 }
