@@ -38,6 +38,7 @@ namespace MundoRP
                 if(job.minLvl <= mundoplayer.level)
 				{
                     mundoplayer.jobName = job.name;
+                    DataManager.updatePlayer(mundoplayer);
                     ModalManager.uiClose(uplayer, Convert.ToUInt16(config.EffectID_NewWorkModal));
                     InterfaceManager.sucesso(uplayer, "Você foi contratado como: " + npc.jobname);
                     return;

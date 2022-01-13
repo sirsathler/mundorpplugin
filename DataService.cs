@@ -35,6 +35,7 @@ namespace MundoRP
             Instance.ObjList_Mailbox.Clear();
             Instance.MundoVehicle_Garages.Clear();
             Instance.NPCList_WorkNPCs.Clear();
+            Instance.JobList_Jobs.Clear();
 
             JobManager.injectJobList();
             GarageManager.injectGarage();

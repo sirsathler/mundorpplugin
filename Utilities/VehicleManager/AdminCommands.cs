@@ -25,7 +25,6 @@ namespace MundoRP
 		public void Execute(IRocketPlayer caller, string[] command)
 		{
 
-
 			InterfaceManager Notificator = new InterfaceManager();
 			DataManager DBManager = new DataManager();
 			UnturnedPlayer Player = (UnturnedPlayer)caller;

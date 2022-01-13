@@ -225,19 +225,19 @@ namespace MundoRP
 						{
                             BusStops.Add(new BusStop(dr.GetString("Object_Name"), (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
-                        if(dr.GetString("Object_Type") == "dump")
+                        else if(dr.GetString("Object_Type") == "dump")
 						{
                             Dumps.Add(new Dump("dump", (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
-                        if(dr.GetString("Object_Type") == "mailbox")
+                        else if(dr.GetString("Object_Type") == "mailbox")
 						{
                             MailBoxes.Add(new Mailbox(dr.GetString("Object_Name"), (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
-                        if(dr.GetString("Object_Type") == "post")
+                        else if(dr.GetString("Object_Type") == "post")
 						{
                             FuseBoxes.Add(new FuseBox(dr.GetString("Object_Name"), (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
-                        if(dr.GetString("Object_Type") == "bin")
+                        else if(dr.GetString("Object_Type") == "bin")
 						{
                             Garbages.Add(new Garbage((float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
@@ -303,26 +303,44 @@ namespace MundoRP
 			}
 		}
 
+        public static void updatePlayer(MundoPlayer player)
+        {
+            runSQLCommand("UPDATE "+ Environments.database +".server_players SET Player_Job ='" +player.jobName+ "', Player_Level ='" +player.level+ "', Player_Xp ='" +player.xp+ "' WHERE Player_SteamId =" +player.steamid);
+            return;
+        }
+
         public static bool updateCar(InteractableVehicle vh, int id)
 		{
-            MySqlConnection sqlConn = new MySqlConnection(connectionString);
-            sqlConn.Open();
-            MySqlCommand sqlCmd = new MySqlCommand("UPDATE " + Environments.database + ".game_vehicles SET Vehicle_Battery =" + vh.batteryCharge+", Vehicle_Health ="+vh.health+", Vehicle_Fuel ="+vh.fuel+" WHERE Vehicle_Id ="+id, sqlConn);
-            sqlCmd.CommandType = System.Data.CommandType.Text;
-            sqlCmd.ExecuteNonQuery();
-            sqlConn.Close();
+            runSQLCommand("UPDATE " + Environments.database + ".game_vehicles SET Vehicle_Battery =" + vh.batteryCharge + ", Vehicle_Health =" + vh.health + ", Vehicle_Fuel =" + vh.fuel + " WHERE Vehicle_Id =" + id);
             return false;
         }
 
         public static bool addToDB(MundoPlayer player)
 		{
-            MySqlConnection sqlConn = new MySqlConnection(connectionString);
-            sqlConn.Open();
-            MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + Environments.database + ".server_players (Player_SteamId, Player_Level, Player_Xp, Player_Job, Player_MP, Player_RP) VALUES (" + player.steamid + ", " + player.level + ", " + player.xp + ", " + player.jobName + ", " + player.mp + ", " + player.rp + " ON DUPLICATE KEY UPDATE ", sqlConn);
-            sqlCmd.CommandType = System.Data.CommandType.Text;
-            sqlCmd.ExecuteNonQuery();
-            sqlConn.Close();
+            runSQLCommand("INSERT INTO " + Environments.database + ".server_players (Player_SteamId, Player_Level, Player_Xp, Player_Job, Player_MP, Player_RP) VALUES (" + player.steamid + ", " + player.level + ", " + player.xp + ", " + player.jobName + ", " + player.mp + ", " + player.rp + " ON DUPLICATE KEY UPDATE ");
             return false;
 		}
+
+
+
+        private static bool runSQLCommand(string sqlCommand)
+        {
+            try
+            {
+                MySqlConnection sqlConn = new MySqlConnection(connectionString);
+                sqlConn.Open();
+                MySqlCommand sqlCmd = new MySqlCommand(sqlCommand, sqlConn);
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                sqlCmd.ExecuteNonQuery();
+                sqlConn.Close();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Rocket.Core.Logging.Logger.Log(ex.ToString());
+                return false;
+            }
+
+        }
     }
 }
