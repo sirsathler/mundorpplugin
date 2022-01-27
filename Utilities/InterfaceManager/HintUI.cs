@@ -11,7 +11,7 @@ namespace MundoRP
 			MundoPlayer mplayer = MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString());
 			Configuration config = Main.Instance.Configuration.Instance;
 
-			if (mplayer.jobName == "reciclador")
+			if (mplayer.jobName == "reciclador" && Main.Instance.PlayerList_InJob.Contains(mplayer.steamid.ToString()))
 			{
 				foreach(Garbage gb in Main.Instance.ObjList_Garbages)
 				{
@@ -22,7 +22,6 @@ namespace MundoRP
 					Vector3 gbPosition = new Vector3(gb.x, gb.y, gb.z);
 					if(Vector3.Distance(gbPosition, uplayer.Position) <= config.Interaction_Range)
 					{
-
 						InterfaceManager.hintJob(uplayer, "Você encontrou uma lixeira não coletada! Use o comando /coletar para coletá-la!", "/coletar");
 						ModalManager.createModal(uplayer, gbPosition, config.EffectID_Hint);
 						return;

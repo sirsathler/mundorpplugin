@@ -78,7 +78,6 @@ namespace MundoRP
 								return;
 							}
 						}
-						InterfaceManager.erro(uplayer, "Esse veículo não te pertence!");
 						return;
 					}
 					try

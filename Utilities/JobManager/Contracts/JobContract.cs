@@ -8,13 +8,6 @@ namespace MundoRP
 {
 	public class JobContract
 	{
-		int garbageCollected;
-		string csteamId;
-
-		public JobContract(string csteamId)
-		{
-			this.csteamId = csteamId;
-			garbageCollected = 0;
-		}
+		public string workerSteamId;
 	}
 }

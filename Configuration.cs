@@ -45,6 +45,12 @@ namespace MundoRP
 
 
 
+		[XmlElement(ElementName = "Jobs_RecicladorGarbageLimit")]
+		public double Jobs_RecicladorGarbageLimit;
+
+
+
+
 		[XmlElement(ElementName = "VehicleManager_Cooldown")]
 		public double VehicleManager_Cooldown;
 
@@ -69,8 +75,14 @@ namespace MundoRP
 			EffectID_NewWorkModal = 14020;
 			EffectID_Hint = 14021;
 			
-			Interaction_Range = 2f;
+			Interaction_Range = 1f;
 			Recicladores_Cooldown = 5;
+
+			Jobs_RecicladorGarbageLimit = 5;
+
+			//Jobs
+
+
 		}
 	}
 }

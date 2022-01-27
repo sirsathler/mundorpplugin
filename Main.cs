@@ -14,11 +14,15 @@ namespace MundoRP
     {
         public Dictionary<UnturnedPlayer, ModalBeacon> ModalOpenedPlayers = new Dictionary<UnturnedPlayer, ModalBeacon>();
         public List<MundoPlayer> PlayerList = new List<MundoPlayer>();
-
-
+        
+        //JOBS
+        public List<string> PlayerList_InJob = new List<string>();
+        public List<Contract_Reciclador> Contract_Recicladors = new List<Contract_Reciclador>();
         public Dictionary<CSteamID, Vehicle> MundoVehicle_Vehicles = new Dictionary<CSteamID, Vehicle>();
         public List<Garage> MundoVehicle_Garages = new List<Garage>();
 
+        //GAMBIARRISSIMA
+        public List<ActiveContract> JobList_ActiveContracts = new List<ActiveContract>();
 
         public List<Mailbox> ObjList_Mailbox = new List<Mailbox>();
         public List<BusStop> ObjList_BusStops = new List<BusStop>();
@@ -35,7 +39,6 @@ namespace MundoRP
         protected override void Load()
         {
             Instance = this;
-            
             //EVENTS
             U.Events.OnPlayerConnected += OnPlayerConnected;
             U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
@@ -75,7 +78,10 @@ namespace MundoRP
 		//ONDESLOG----------------------------------------------------//
 		private void OnPlayerDisconnected(UnturnedPlayer Player)
 		{
+            MundoPlayer mplayer = MundoPlayer.getPlayerInList(Player.CSteamID.ToString());
+
             Instance.ModalOpenedPlayers.Remove(Player);
+            JobManager.removePlayerJob(mplayer);
             int playerId = MundoPlayer.getPlayerIdInList(Player.CSteamID.ToString());
             if(playerId != -1)
 			{

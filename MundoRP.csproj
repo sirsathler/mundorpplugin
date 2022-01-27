@@ -44,8 +44,10 @@
     <Compile Include="Utilities\DatabaseManager\DataManager.cs" />
     <Compile Include="Utilities\GarageManager\GarageManager.cs" />
     <Compile Include="Utilities\GarageManager\VehicleDebt.cs" />
+    <Compile Include="Utilities\JobManager\ActiveContract.cs" />
+    <Compile Include="Utilities\JobManager\Contracts\Contract_Reciclador.cs" />
     <Compile Include="Utilities\JobManager\Job.cs" />
-    <Compile Include="Utilities\JobManager\JobContract.cs" />
+    <Compile Include="Utilities\JobManager\Contracts\JobContract.cs" />
     <Compile Include="Utilities\JobManager\JobManager.cs" />
     <Compile Include="Utilities\MapManager\Dump.cs" />
     <Compile Include="Utilities\MapManager\Mailbox.cs" />

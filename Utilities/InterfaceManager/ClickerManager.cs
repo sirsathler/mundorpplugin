@@ -31,21 +31,7 @@ namespace MundoRP
 
             if (buttonName == "ActionModal")
             {
-                WorkNPC npc = NPCManager.getNearbyNPC(uplayer);
-                MundoPlayer mundoplayer = MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString());
-                Job job = JobManager.getJobByName(npc.jobname);
-
-                if(job.minLvl <= mundoplayer.level)
-				{
-                    mundoplayer.jobName = job.name;
-                    DataManager.updatePlayer(mundoplayer);
-                    ModalManager.uiClose(uplayer, Convert.ToUInt16(config.EffectID_NewWorkModal));
-                    InterfaceManager.sucesso(uplayer, "Você foi contratado como: " + npc.jobname);
-                    return;
-				}
-
-                InterfaceManager.erro(uplayer, "Você não possui level suficiente para esse trabalho!");
-                return;
+                JobManager.startPlayerJob(mplayer);
             }
 
 

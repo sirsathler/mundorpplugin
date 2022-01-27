@@ -10,7 +10,6 @@ namespace MundoRP
         public static Configuration config = Main.Instance.Configuration.Instance;
         public static void WorkHUD(MundoPlayer mplayer, Job job)
 		{
-            Rocket.Core.Logging.Logger.Log("Abrindo modal");
             UnturnedPlayer uplayer = UnturnedPlayer.FromCSteamID(mplayer.steamid);
             ushort effectId = Convert.ToUInt16(Main.Instance.Configuration.Instance.EffectID_NewWorkModal);
 
