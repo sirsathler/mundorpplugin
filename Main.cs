@@ -66,10 +66,9 @@ namespace MundoRP
             Instance.PlayerList.Add(newplayer);
 
             InterfaceManager.updateHUD(newplayer);
-            Rocket.Core.Logging.Logger.Log("Players online atualmente: " + Instance.PlayerList.Count.ToString());
             foreach(MundoPlayer player in Main.Instance.PlayerList)
 			{
-                Rocket.Core.Logging.Logger.Log("Usuário: "+player.username);
+                Rocket.Core.Logging.Logger.Log("Usuário: "+player.Player.name+" entrou no jogo. Existem " + Instance.PlayerList.Count.ToString() + "online no momento.");
 			}   
 		}
 
@@ -84,7 +83,7 @@ namespace MundoRP
             if(playerId != -1)
 			{
                 Instance.PlayerList.RemoveAt(playerId);
-                Rocket.Core.Logging.Logger.Log("Players online atualmente: " + Instance.PlayerList.Count.ToString());
+                Rocket.Core.Logging.Logger.Log("Usuário "+Player.Player.name+" saiu do jogo. Restam " + Instance.PlayerList.Count.ToString() + "players online.");
 			}
 
             Rocket.Core.Logging.Logger.Log(Player.CSteamID.ToString());
