@@ -11,7 +11,7 @@ namespace MundoRP
 			MundoPlayer mplayer = MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString());
 			Configuration config = Main.Instance.Configuration.Instance;
 
-			if (mplayer.jobName == "reciclador" && Main.Instance.PlayerList_InJob.Contains(mplayer.steamid.ToString()))
+			if (mplayer.jobName == "reciclador" && JobManager.isPlayerWorking(mplayer))
 			{
 				foreach(Garbage gb in Main.Instance.ObjList_Garbages)
 				{

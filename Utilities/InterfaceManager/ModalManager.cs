@@ -16,23 +16,22 @@ namespace MundoRP
 		public static void removePlayerFromModal(UnturnedPlayer uplayer)
 		{
 			ModalBeacon mb = Main.Instance.ModalOpenedPlayers[uplayer];
-			if (Vector3.Distance(uplayer.Position, mb.position) > mb.range * 2)
+			try
 			{
-				try
-				{
-					Main.Instance.ModalOpenedPlayers.Remove(uplayer);
-					uiClose(uplayer, mb.id);
-					InterfaceManager.alerta(uplayer, "Você saiu da zona do modal!");
-					return;
-				}
-				catch (Exception ex)
-				{
-					Rocket.Core.Logging.Logger.Log(ex.ToString());
-					return;
-				}
+				Main.Instance.ModalOpenedPlayers.Remove(uplayer);
+				uiClose(uplayer, mb.id);
+				InterfaceManager.alerta(uplayer, "Você saiu da zona do modal!");
+				return;
+			}
+			catch (Exception ex)
+			{
+				Rocket.Core.Logging.Logger.Log(ex.ToString());
+				return;
 			}
 		}
-		public static void uiClose(UnturnedPlayer uplayer, ushort id)
+
+        [Obsolete]
+        public static void uiClose(UnturnedPlayer uplayer, ushort id)
 		{
 			EffectManager.askEffectClearByID(id, uplayer.SteamPlayer().transportConnection);
 			uplayer.Player.serversideSetPluginModal(false);

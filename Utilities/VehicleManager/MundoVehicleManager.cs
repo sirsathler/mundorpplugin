@@ -68,7 +68,8 @@ namespace MundoRP
 			return 0;
 		}
 
-		public static void giveVehicle(UnturnedPlayer player, int carIndexInPlayerGarage, int carTableId, Garage garage)
+        [Obsolete]
+        public static void giveVehicle(UnturnedPlayer player, int carIndexInPlayerGarage, int carTableId, Garage garage)
 		{
 			MundoPlayer mp = MundoPlayer.getPlayerInList(player.CSteamID.ToString());
 			GarageVehicle gv = mp.vehicleList[carIndexInPlayerGarage-1];

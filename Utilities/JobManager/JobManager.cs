@@ -42,20 +42,18 @@ namespace MundoRP
 
             if(mplayer.jobName == job.name)
             {
-				if (Main.Instance.PlayerList_InJob.Contains(mplayer.steamid.ToString()))
+				if (isPlayerWorking(mplayer))
 				{
 					InterfaceManager.erro(uplayer, "Você já está em serviço!");
 					ModalManager.uiClose(uplayer, Convert.ToUInt16(Main.Instance.Configuration.Instance.EffectID_NewWorkModal));
 					return;
 				}
-
                 try
                 {
 					//CREATING NEW JOB CONTRACT ==================================== IMPORTANT!
 					ActiveContract newContract = null;
 
 					if(mplayer.jobName == "reciclador") { newContract = new ActiveContract(mplayer, new Contract_Reciclador(mplayer.steamid.ToString())); }
-
 
 					//============================================================== IMPORTANT!
 					
@@ -90,11 +88,19 @@ namespace MundoRP
 			
 		}
 
-		public static bool removePlayerJob(MundoPlayer mplayer)
+		public static bool isPlayerWorking(MundoPlayer mplayer)
         {
 			int hasContract = ActiveContract.getActiveContract(mplayer);
+			if(hasContract == -1)
+            {
+				return false;
+            }
+			return true;
+        }
 
-			if (hasContract == -1)
+		public static bool removePlayerJob(MundoPlayer mplayer)
+        {
+			if (!isPlayerWorking(mplayer))
             {
 				Rocket.Core.Logging.Logger.Log("[MUNDO - Job Manager] Este usuario nao esta em um trabalho!");
 				return false;

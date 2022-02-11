@@ -16,8 +16,6 @@ namespace MundoRP
         public List<MundoPlayer> PlayerList = new List<MundoPlayer>();
         
         //JOBS
-        public List<string> PlayerList_InJob = new List<string>();
-        public List<Contract_Reciclador> Contract_Recicladors = new List<Contract_Reciclador>();
         public Dictionary<CSteamID, Vehicle> MundoVehicle_Vehicles = new Dictionary<CSteamID, Vehicle>();
         public List<Garage> MundoVehicle_Garages = new List<Garage>();
 

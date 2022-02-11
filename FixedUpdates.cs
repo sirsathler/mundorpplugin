@@ -17,7 +17,9 @@ namespace MundoRP
 				
 				if (Instance.ModalOpenedPlayers.ContainsKey(uplayer))
 				{
-					ModalManager.removePlayerFromModal(uplayer);
+					if(Vector3.Distance(Instance.ModalOpenedPlayers[uplayer].position, uplayer.Position) > Instance.Configuration.Instance.Interaction_Range){
+						ModalManager.removePlayerFromModal(uplayer);
+                    }
 				}
 				else
 				{

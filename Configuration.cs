@@ -12,6 +12,9 @@ namespace MundoRP
 
 		[XmlElement(ElementName = "EffectID_Hint")]
 		public short EffectID_Hint;
+
+		[XmlElement(ElementName = "EffectID_Job")]
+		public short EffectID_Job;
 		
 		[XmlElement(ElementName = "EffectID_Garage")]
 		public short EffectID_Garage;
@@ -74,13 +77,14 @@ namespace MundoRP
 			EffectID_Park = 14011;
 			EffectID_NewWorkModal = 14020;
 			EffectID_Hint = 14021;
-			
+			EffectID_Job = 14007;
+
 			Interaction_Range = 1f;
 			Recicladores_Cooldown = 5;
 
+			//Jobs
 			Jobs_RecicladorGarbageLimit = 5;
 
-			//Jobs
 
 
 		}
