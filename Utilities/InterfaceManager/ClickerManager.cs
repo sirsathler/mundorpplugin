@@ -13,7 +13,6 @@ namespace MundoRP
             UnturnedPlayer uplayer = UnturnedPlayer.FromPlayer(player);
             MundoPlayer mplayer = MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString());
             Configuration config = Main.Instance.Configuration.Instance;
-dddd
 
 
 
