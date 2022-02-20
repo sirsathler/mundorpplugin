@@ -16,7 +16,6 @@ namespace MundoRP
 
 
 
-
             if (buttonName == "CloseButton")
             {
                 ModalManager.uiClose(uplayer, Convert.ToUInt16(config.EffectID_Garage));
@@ -61,7 +60,7 @@ namespace MundoRP
                 }
                 if (mplayer.actualCar != 0)
                 {
-                    InterfaceManager.erro(uplayer, "Guarde o seu veículo na garagem primeiro!");
+                    InterfaceManager.erro(uplayer, "Você deve guardar o seu veículo primeiro antes retirar outro da garagem!");
                     return;
                 }
                 MundoVehicleManager.giveVehicle(uplayer, cardId, carTableId, GarageManager.getNearbyGarage(uplayer));
