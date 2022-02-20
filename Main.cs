@@ -66,7 +66,7 @@ namespace MundoRP
             Instance.PlayerList.Add(newplayer);
 
             InterfaceManager.updateHUD(newplayer);
-            foreach(MundoPlayer player in Main.Instance.PlayerList)
+            (MundoPlayer player in Main.Instance.PlayerList)
 			{
                 Rocket.Core.Logging.Logger.Log("Usuário: "+player.Player.name+" entrou no jogo. Existem " + Instance.PlayerList.Count.ToString() + "online no momento.");
 			}   
