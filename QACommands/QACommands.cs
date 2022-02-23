@@ -9,13 +9,22 @@ using SDG.Unturned;
 using Rocket.Unturned.Player;
 using Rocket.Unturned.Chat;
 using MySql.Data.MySqlClient;
+using HarmonyLib;
+
+using UnityEngine;
+using UnityEditor;
 
 namespace MundoRP
 {
+	public static class QAClass
+	{
+		internal static void qacommand(Player player, uint sim, byte key, bool state)
+		{
+		}
+	}
+
 	class QACommands : IRocketCommand
 	{
-		NotificationManager notificator = new NotificationManager();
-
 		public AllowedCaller AllowedCaller => AllowedCaller.Player;
 
 		public string Name => "qa";
@@ -30,20 +39,8 @@ namespace MundoRP
 
 		void IRocketCommand.Execute(IRocketPlayer caller, string[] command)
 		{
-			UnturnedPlayer Player = (UnturnedPlayer)caller;
-			NotificationManager Notificator = new NotificationManager();
-			DataManager databaseManager = new DataManager();
-			MundoPlayer mPlayer = Main.Instance.getPlayerInList(Player.CSteamID.ToString());
-
-			if (Player.IsInVehicle)
-			{
-				Notificator.alerta(Player, "Salvando o carro: "+mPlayer.actualCar.ToString());
-				databaseManager.updateCar(Main.Instance.vehicleList[Player.CSteamID].iv, Main.Instance.vehicleList[Player.CSteamID].gv.tableId);
-			}
-			else
-			{
-				Notificator.erro(Player, "Você não está em um veículo!");
-			}
+			UnturnedPlayer uplayer = (UnturnedPlayer)caller;
+			EffectManager.sendEffect(6911, uplayer.SteamPlayer().transportConnection, uplayer.Position);
 		}
 	}
 }

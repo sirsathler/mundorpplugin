@@ -7,13 +7,7 @@ namespace MundoRP
 {
 	public class DataManager
 	{
-        const string server = "127.0.0.1";
-        const string port = "3306";
-        const string user = "root";
-        const string password = "mundorpadmin1";
-        const string database = "mundorp";
-
-        const string connectionString = "server=" + server + ";port=" + port + ";User Id=" + user + ";password=" + password;
+        public static string connectionString = "server=" + Environments.server + ";port=" + Environments.port + ";User Id=" + Environments.user + ";password=" + Environments.password;
 
         public string openDB()
         {
@@ -29,13 +23,13 @@ namespace MundoRP
                 return ex.ToString();
             }
         }
-        public void truncateTable(string table)
+        public static void truncateTable(string table)
         {
             try
             {
                 MySqlConnection sqlConn = new MySqlConnection(connectionString);
                 sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("TRUNCATE " + database + "." +table, sqlConn);
+                MySqlCommand sqlCmd = new MySqlCommand("TRUNCATE " + Environments.database + "." +table, sqlConn);
                 sqlCmd.ExecuteNonQuery();
                 sqlConn.Close();
                 return;
@@ -45,13 +39,13 @@ namespace MundoRP
                 Rocket.Core.Logging.Logger.Log(ex.ToString());
             }
         }
-        public int count(string table)
+        public static int count(string table)
         {
             try
             {
                 MySqlConnection sqlConn = new MySqlConnection(connectionString);
                 sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("SELECT COUNT(*) FROM  " + database + "." + table, sqlConn);
+                MySqlCommand sqlCmd = new MySqlCommand("SELECT COUNT(*) FROM  " + Environments.database + "." + table, sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
                 MySqlDataReader dr;
                 dr = sqlCmd.ExecuteReader();
@@ -69,13 +63,13 @@ namespace MundoRP
         
         //GETTERS====================================================================================================================
 
-        public MundoPlayer getPlayerBySteamId(Steamworks.CSteamID id)
+        public static MundoPlayer getPlayerBySteamId(Steamworks.CSteamID id)
         {
             try
             {
                 MySqlConnection sqlConn = new MySqlConnection(connectionString);
                 sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("SELECT Player_Username, Player_SteamId, Player_Level, Player_Xp, Player_Job, Player_Premium, Player_MP, Player_RP FROM " + database + ".server_players WHERE Player_SteamId=" + id.ToString(), sqlConn);
+                MySqlCommand sqlCmd = new MySqlCommand("SELECT Player_Username, Player_SteamId, Player_Level, Player_Xp, Player_Job, Player_Premium, Player_MP, Player_RP FROM " + Environments.database + ".server_players WHERE Player_SteamId=" + id.ToString(), sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
                 MySqlDataReader dr = sqlCmd.ExecuteReader();
                 dr.Read();
@@ -84,6 +78,9 @@ namespace MundoRP
                 premium = Convert.ToDateTime(dr.GetString(5)) > DateTime.Now ? true : false;
                 List<GarageVehicle> garageVehicles = getVehiclesBySteamId(id);
                 MundoPlayer player = new MundoPlayer(dr.GetString(0), id, Convert.ToInt32(dr.GetString(2)), Convert.ToInt32(dr.GetString(3)), dr.GetString(4), premium, (float)Convert.ToDouble(dr.GetString(7)), (float)Convert.ToDouble(dr.GetString(6)), garageVehicles);
+
+                player.jobName = player.jobName == null ? "desempregado" : dr.GetString(4);
+
                 sqlConn.Close();
                 
                 return player;
@@ -96,7 +93,7 @@ namespace MundoRP
             }
         }
 
-        public List<GarageVehicle> getVehiclesBySteamId(Steamworks.CSteamID id)
+        public static List<GarageVehicle> getVehiclesBySteamId(Steamworks.CSteamID id)
 		{
             List<GarageVehicle> playerVehicles = new List<GarageVehicle>();
             try
@@ -105,10 +102,10 @@ namespace MundoRP
                 sqlConn.Open();
 
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT Vehicles_uId, Vehicle_Battery, Vehicle_Health, Vehicle_Fuel, Vehicles_Name, Vehicles_Color, Vehicle_Id " +
-                    "FROM " + database + ".server_players " +
+                    "FROM " + Environments.database + ".server_players " +
                     "INNER JOIN mundorp.game_vehicles " +
                     "INNER JOIN mundorp.game_vehicles_data " +
-                    "ON mundorp.game_vehicles.Vehicle_uId = " + database + ".game_vehicles_data.Vehicles_uId " +
+                    "ON mundorp.game_vehicles.Vehicle_uId = " + Environments.database + ".game_vehicles_data.Vehicles_uId " +
                     "WHERE mundorp.game_vehicles.Vehicle_OwnerId =" + id.ToString() +
                     " AND mundorp.server_players.Player_SteamId =" + id.ToString(), sqlConn);
 
@@ -131,7 +128,7 @@ namespace MundoRP
                         string vColor= dr.GetString(5);
                         int TableId = Convert.ToUInt16(dr.GetString(6));
 
-                        List<VehicleDebt> vDebts = GetVehicleDebts(TableId);
+                        List<VehicleDebt> vDebts = getVehicleDebts(TableId);
 
                         playerVehicles.Add(new GarageVehicle(TableId, owner, vId, vColor, date, bat, hp, gas, vname, vDebts));
                     }
@@ -148,7 +145,7 @@ namespace MundoRP
             }
         }
 
-        public List<VehicleDebt> GetVehicleDebts(int vehicleTableId)
+        public static List<VehicleDebt> getVehicleDebts(int vehicleTableId)
 		{
             MySqlConnection sqlConne = new MySqlConnection(connectionString);
             sqlConne.Open();
@@ -163,7 +160,6 @@ namespace MundoRP
             {
                 while (dr.Read())
                 {
-                    Rocket.Core.Logging.Logger.Log(((float)Convert.ToUInt32(dr.GetString("Debt_Value"))).ToString());
                     newVehicleDebts.Add(new VehicleDebt(dr.GetString("Debt_Description"), (float)Convert.ToUInt32(dr.GetString("Debt_Value"))));
                 }
                 dr.NextResult();
@@ -173,50 +169,83 @@ namespace MundoRP
             return newVehicleDebts;
         }
         
-        public ObjectManager getObjectsFromDB()
+        public static List<Job> getJobsFromDB()
+		{
+			try
+			{
+                MySqlConnection sqlConne = new MySqlConnection(connectionString);
+                sqlConne.Open();
+                MySqlCommand sqlCmd = new MySqlCommand("SELECT * FROM " + Environments.database + ".game_jobs", sqlConne);
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                MySqlDataReader dr = sqlCmd.ExecuteReader();
+
+
+                List<Job> newJobList = new List<Job>();
+                int i = 0;
+                while (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        newJobList.Add(new Job(dr.GetString("Job_Name"), (float)Convert.ToUInt32(dr.GetString("Job_Salary")), Convert.ToInt32(dr.GetString("Job_MinLvl")), dr.GetString("Job_Difficulty"), dr.GetString("Job_Arg0"), dr.GetString("Job_Arg1"), dr.GetString("Job_Arg2"), dr.GetString("Job_Arg3")));
+                    }
+                    dr.NextResult();
+                    i++;
+                }
+                sqlConne.Close();
+                return newJobList;
+			}
+            catch(Exception ex)
+			{
+                Rocket.Core.Logging.Logger.Log(ex.ToString());
+                return null;
+			}
+        }
+        
+        public static ObjectManager getObjectsFromDB()
         {
-            List<Aterro> Aterros = new List<Aterro>();
-            List<CaixaCorreio> CaixasCorreios = new List<CaixaCorreio>();
-            List<LataDeLixo> LatasDeLixo = new List<LataDeLixo>();
-            List<PontoOnibus> PontosDeOnibus = new List<PontoOnibus>();
-            List<Poste> Postes = new List<Poste>();
+            List<Dump> Dumps = new List<Dump>();
+            List<Mailbox> MailBoxes = new List<Mailbox>();
+            List<Garbage> Garbages = new List<Garbage>();
+            List<BusStop> BusStops = new List<BusStop>();
+            List<FuseBox> FuseBoxes = new List<FuseBox>();
 
             try
             {
                 MySqlConnection sqlConn = new MySqlConnection(connectionString);
                 sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("SELECT * FROM " + database + ".game_objects", sqlConn);
+                MySqlCommand sqlCmd = new MySqlCommand("SELECT * FROM " + Environments.database + ".game_objects", sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
                 MySqlDataReader dr = sqlCmd.ExecuteReader();
                 while (dr.HasRows)
                 {
                     while (dr.Read())
                     {
+                        
                         if(dr.GetString("Object_Type") == "busstop")
 						{
-                            PontosDeOnibus.Add(new PontoOnibus(dr.GetString("Object_Name"), (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
+                            BusStops.Add(new BusStop(dr.GetString("Object_Name"), (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
-                        if(dr.GetString("Object_Type") == "dump")
+                        else if(dr.GetString("Object_Type") == "dump")
 						{
-                            Aterros.Add(new Aterro("dump", (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
+                            Dumps.Add(new Dump("dump", (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
-                        if(dr.GetString("Object_Type") == "mailbox")
+                        else if(dr.GetString("Object_Type") == "mailbox")
 						{
-                            CaixasCorreios.Add(new CaixaCorreio(dr.GetString("Object_Name"), (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
+                            MailBoxes.Add(new Mailbox(dr.GetString("Object_Name"), (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
-                        if(dr.GetString("Object_Type") == "post")
+                        else if(dr.GetString("Object_Type") == "post")
 						{
-                            Postes.Add(new Poste(dr.GetString("Object_Name"), (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
+                            FuseBoxes.Add(new FuseBox(dr.GetString("Object_Name"), (float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
-                        if(dr.GetString("Object_Type") == "bin")
+                        else if(dr.GetString("Object_Type") == "bin")
 						{
-                            LatasDeLixo.Add(new LataDeLixo((float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
+                            Garbages.Add(new Garbage((float)Convert.ToInt32(dr.GetString("Object_PosX")), (float)Convert.ToInt32(dr.GetString("Object_PosY")), (float)Convert.ToInt32(dr.GetString("Object_PosZ"))));
 						}
                     }
                     dr.NextResult();
                 }
                 sqlConn.Close();
-                ObjectManager obManager = new ObjectManager(Aterros, CaixasCorreios, LatasDeLixo, PontosDeOnibus, Postes);
+                ObjectManager obManager = new ObjectManager(Dumps, MailBoxes, Garbages, BusStops, FuseBoxes);
                 return obManager;
             }
             catch(Exception ex)
@@ -226,40 +255,42 @@ namespace MundoRP
             }
         }
 
-        public bool updateObjects(ObjectManager obj)
+        public static bool updateObjects()
 		{
-			try
+            ObjectManager obj = new ObjectManager(Main.Instance.ObjList_Dumps, Main.Instance.ObjList_Mailbox, Main.Instance.ObjList_Garbages, Main.Instance.ObjList_BusStops, Main.Instance.ObjList_Fuses);
+
+            try
 			{
                 truncateTable("game_objects");
 				MySqlConnection sqlConn = new MySqlConnection(connectionString);
 				sqlConn.Open();
-				foreach (Aterro obje in obj.Aterros)
+				foreach (Dump obje in obj.Dumps)
 				{
-					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('" + obje.name + "', 'dump', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() +")", sqlConn);
+					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + Environments.database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('" + obje.name + "', 'dump', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() +")", sqlConn);
 					sqlCmd.CommandType = System.Data.CommandType.Text;
 					sqlCmd.ExecuteNonQuery();
 				}
-				foreach (LataDeLixo obje in obj.LatasDeLixo)
+				foreach (Garbage obje in obj.Garbages)
 				{
-					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('lixo', 'bin', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() + ")", sqlConn);
+					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + Environments.database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('lixo', 'bin', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() + ")", sqlConn);
 					sqlCmd.CommandType = System.Data.CommandType.Text;
 					sqlCmd.ExecuteNonQuery();
 				}
-				foreach (CaixaCorreio obje in obj.CaixasCorreios)
+                foreach (Mailbox obje in obj.MailBoxes)
 				{
-					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('" + obje.name + "', 'mailbox', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() + ")", sqlConn);
+					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + Environments.database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('" + obje.name + "', 'mailbox', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() + ")", sqlConn);
 					sqlCmd.CommandType = System.Data.CommandType.Text;
 					sqlCmd.ExecuteNonQuery();
 				}
-				foreach (Poste obje in obj.Postes)
+                foreach (FuseBox obje in obj.FuseBoxes)
 				{
-					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('" + obje.name + "', 'post', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() + ")", sqlConn);
+					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + Environments.database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('" + obje.name + "', 'post', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() + ")", sqlConn);
 					sqlCmd.CommandType = System.Data.CommandType.Text;
 					sqlCmd.ExecuteNonQuery();
 				}
-				foreach (PontoOnibus obje in obj.PontosDeOnibus)
+				foreach (BusStop obje in obj.BusStops)
 				{
-					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('" + obje.name + "', 'post', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() + ")", sqlConn);
+					MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + Environments.database + ".game_objects (Object_Name, Object_Type, Object_PosX, Object_PosY, Object_PosZ) VALUES ('" + obje.name + "', 'post', " + obje.x.ToString() + ", " + obje.y.ToString() + ", " + obje.z.ToString() + ")", sqlConn);
 					sqlCmd.CommandType = System.Data.CommandType.Text;
 					sqlCmd.ExecuteNonQuery();
 				}
@@ -272,27 +303,44 @@ namespace MundoRP
 			}
 		}
 
-        //SETTERS====================================================================================================================
-        public bool updateCar(InteractableVehicle vh, int id)
+        public static void updatePlayer(MundoPlayer player)
+        {
+            runSQLCommand("UPDATE "+ Environments.database +".server_players SET Player_Job ='" +player.jobName+ "', Player_Level ='" +player.level+ "', Player_Xp ='" +player.xp+ "' WHERE Player_SteamId =" +player.steamid);
+            return;
+        }
+
+        public static bool updateCar(InteractableVehicle vh, int id)
 		{
-            MySqlConnection sqlConn = new MySqlConnection(connectionString);
-            sqlConn.Open();
-            MySqlCommand sqlCmd = new MySqlCommand("UPDATE " + database + ".game_vehicles SET Vehicle_Battery =" + vh.batteryCharge+", Vehicle_Health ="+vh.health+", Vehicle_Fuel ="+vh.fuel+" WHERE Vehicle_Id ="+id, sqlConn);
-            sqlCmd.CommandType = System.Data.CommandType.Text;
-            sqlCmd.ExecuteNonQuery();
-            sqlConn.Close();
+            runSQLCommand("UPDATE " + Environments.database + ".game_vehicles SET Vehicle_Battery =" + vh.batteryCharge + ", Vehicle_Health =" + vh.health + ", Vehicle_Fuel =" + vh.fuel + " WHERE Vehicle_Id =" + id);
             return false;
         }
 
-        public bool addToDB(MundoPlayer player)
+        public static bool addToDB(MundoPlayer player)
 		{
-            MySqlConnection sqlConn = new MySqlConnection(connectionString);
-            sqlConn.Open();
-            MySqlCommand sqlCmd = new MySqlCommand("INSERT INTO " + database + ".server_players (Player_SteamId, Player_Level, Player_Xp, Player_Job, Player_MP, Player_RP) VALUES (" + player.steamid + ", " + player.level + ", " + player.xp + ", " + player.job + ", " + player.mp + ", " + player.rp + " ON DUPLICATE KEY UPDATE ", sqlConn);
-            sqlCmd.CommandType = System.Data.CommandType.Text;
-            sqlCmd.ExecuteNonQuery();
-            sqlConn.Close();
+            runSQLCommand("INSERT INTO " + Environments.database + ".server_players (Player_SteamId, Player_Level, Player_Xp, Player_Job, Player_MP, Player_RP) VALUES (" + player.steamid + ", " + player.level + ", " + player.xp + ", " + player.jobName + ", " + player.mp + ", " + player.rp + " ON DUPLICATE KEY UPDATE ");
             return false;
 		}
+
+
+
+        private static bool runSQLCommand(string sqlCommand)
+        {
+            try
+            {
+                MySqlConnection sqlConn = new MySqlConnection(connectionString);
+                sqlConn.Open();
+                MySqlCommand sqlCmd = new MySqlCommand(sqlCommand, sqlConn);
+                sqlCmd.CommandType = System.Data.CommandType.Text;
+                sqlCmd.ExecuteNonQuery();
+                sqlConn.Close();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Rocket.Core.Logging.Logger.Log(ex.ToString());
+                return false;
+            }
+
+        }
     }
 }

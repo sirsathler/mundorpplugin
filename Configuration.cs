@@ -7,90 +7,86 @@ namespace MundoRP
 {
 	public class Configuration : IRocketPluginConfiguration
 	{
-		// GARAGE ============================================================= //
-		[XmlElement(ElementName = "GarageBeacon_Range")]
-		public float GarageBeacon_Range;
+		[XmlElement(ElementName = "EffectID_NewWorkModal")]
+		public short EffectID_NewWorkModal;
 
-		// VEHICLEMANAGER ============================================================= //
-		[XmlElement(ElementName = "VehicleManager_MinRange")]
-		public float VehicleManager_MinRange;
+		[XmlElement(ElementName = "EffectID_Hint")]
+		public short EffectID_Hint;
+
+		[XmlElement(ElementName = "EffectID_Job")]
+		public short EffectID_Job;
+		
+		[XmlElement(ElementName = "EffectID_Garage")]
+		public short EffectID_Garage;
+
+		[XmlElement(ElementName = "EffectID_Park")]
+		public short EffectID_Park;
+		
+		[XmlElement(ElementName = "EffectID_HUD")]
+		public short EffectID_HUD;
+
+		[XmlElement(ElementName = "EffectID_Sucess")]
+		public short EffectID_Sucess;
+		
+		[XmlElement(ElementName = "EffectID_Alert")]
+		public short EffectID_Alert;
+		
+		[XmlElement(ElementName = "EffectID_Error")]
+		public short EffectID_Error;
+		
+		[XmlElement(ElementName = "EffectID_Level")]
+		public short EffectID_Level;
+				
+		[XmlElement(ElementName = "EffectID_Exp")]
+		public short EffectID_Exp;	
+
+		[XmlElement(ElementName = "Interaction_Range")]
+		public float Interaction_Range;	
+
+		[XmlElement(ElementName = "Recicladores_Cooldown")]
+		public float Recicladores_Cooldown;	
+
+
+
+		[XmlElement(ElementName = "Jobs_RecicladorGarbageLimit")]
+		public double Jobs_RecicladorGarbageLimit;
+
+
+
 
 		[XmlElement(ElementName = "VehicleManager_Cooldown")]
 		public double VehicleManager_Cooldown;
 
-		[XmlArray(ElementName = "VehicleManager_Garagens")]
-		public List<Garage> VehicleManager_Garagens = new List<Garage>() { };
+		[XmlArray(ElementName = "MundoVehicle_Garages")]
+		public List<Garage> MundoVehicle_Garages = new List<Garage>() { };
 
-		// MOTORISTA ================================================================== //
-		[XmlElement(ElementName = "Motorista_MinRange")]
-		public float Motorista_MinRange;
-
-		[XmlElement(ElementName = "Motorista_Carro")]
-		public ushort Motorista_Carro;
-
-		// ENTREGADOR =================================================================== //
-		[XmlElement("Entregador_Range")]
-		public float Entregador_Range;
-
-		[XmlElement("Entregador_CargasPorTrabalho")]
-		public int Entregador_CargasPorTrabalho;
-		
-		[XmlElement("Entregador_Carro")]
-		public ushort Entregador_Carro;
-
-		// ELETRICISTA ================================================================ //
-		[XmlElement("Eletricista_MinRange")]
-		public float Eletricista_MinRange;
-
-		[XmlElement("Eletricista_CargasPorTrabalho")]
-		public int Eletricista_CargasPorTrabalho;
-
-		[XmlElement("Eletricista_Carro")]
-		public ushort Eletricista_Carro;
-
-		// LIXEIRO ===================================================================== //
-		[XmlElement("Reciclador_MinRange")]
-		public float Reciclador_MinRange;
-
-		[XmlElement("Reciclador_CargasPorTrabalho")]
-		public int Reciclador_CargasPorTrabalho;
-
-		[XmlElement("Reciclador_Cooldown")]
-		public float Reciclador_Cooldown;
-
-		[XmlElement("Reciclador_Carro")]
-		public ushort Reciclador_Carro;
+		[XmlArray(ElementName = "NPC_List")]
+		public List<WorkNPC> NPC_List = new List<WorkNPC>();
 
 		public void LoadDefaults()
 		{
-			//MODALBEACON
-			GarageBeacon_Range = 4;
+			EffectID_Error = 14001;
+			EffectID_Alert = 14002;
+			EffectID_Sucess = 14003;
+			EffectID_Exp = 14004;
+			EffectID_Level = 14005;
+
+			EffectID_HUD = 14006;
+
+			EffectID_Garage = 14010;
+			EffectID_Park = 14011;
+			EffectID_NewWorkModal = 14020;
+			EffectID_Hint = 14021;
+			EffectID_Job = 14007;
+
+			Interaction_Range = 1f;
+			Recicladores_Cooldown = 5;
+
+			//Jobs
+			Jobs_RecicladorGarbageLimit = 5;
 
 
-			//VEHICLEMANAGER
-			VehicleManager_MinRange = 4;
-			VehicleManager_Cooldown = 10; //Em Segundos!
 
-
-			//ELETRICISTAS
-			Eletricista_MinRange = 5;
-			Eletricista_CargasPorTrabalho = 3;
-			Eletricista_Carro = 36187;
-
-			//ENTREGADORES
-			Entregador_CargasPorTrabalho = 5;
-			Entregador_Range = 3;
-			Entregador_Carro = 36417;
-
-			//LIXEIROS
-			Reciclador_CargasPorTrabalho = 3;
-			Reciclador_Cooldown = 10;
-			Reciclador_MinRange = 5;
-			Reciclador_Carro = 56193;
-
-			//MOTORISTAS
-			Motorista_MinRange = 10;
-			Motorista_Carro = 47229;
 		}
 	}
 }

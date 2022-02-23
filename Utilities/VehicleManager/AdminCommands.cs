@@ -24,14 +24,15 @@ namespace MundoRP
 
 		public void Execute(IRocketPlayer caller, string[] command)
 		{
-			NotificationManager Notificator = new NotificationManager();
+
+			InterfaceManager Notificator = new InterfaceManager();
 			DataManager DBManager = new DataManager();
 			UnturnedPlayer Player = (UnturnedPlayer)caller;
 			MundoVehicleManager methods = new MundoVehicleManager();
 
 			if (command[0] == "reset")
 			{
-				Main.Instance.ClearVehicles();
+				MundoVehicleManager.clearVehicles();
 				return;
 			}
 		}

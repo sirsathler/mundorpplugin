@@ -11,7 +11,7 @@ namespace MundoRP
 	//------------------------------------------ COLETAR
 	public class AdminCommands : IRocketCommand
 	{
-		public AllowedCaller AllowedCaller => AllowedCaller.Player;
+		public AllowedCaller AllowedCaller => AllowedCaller.Both;
 
 		public string Name => "mundorp";
 
@@ -24,43 +24,42 @@ namespace MundoRP
 		public List<string> Permissions => new List<string>();
 
 		DataManager DBManager = new DataManager();
-		NotificationManager Notificator = new NotificationManager();
 		public void Execute(IRocketPlayer caller, string[] command)
 		{
 			UnturnedPlayer Player = (UnturnedPlayer)caller;
 
 			if (command[0] == "setdata")
 			{
-				Notificator.alerta(Player, "Adicionando dados no banco!");
+				InterfaceManager.alerta(Player, "Adicionando dados no banco!");
 				try
 				{
 					if (Main.Instance.setData())
 					{
-						Notificator.sucesso(Player, "Banco de Dados atualizado com sucesso!");
+						InterfaceManager.sucesso(Player, "Banco de Dados atualizado com sucesso!");
 					}
 				}
 				catch (Exception ex)
 				{
-					Notificator.erro(Player);
+					InterfaceManager.erro(Player);
 					Logger.Log(ex);
 					return;
 				}
-				Notificator.sucesso(Player);
+				InterfaceManager.sucesso(Player);
 			}
 			else if (command[0] == "readdata")
 			{
-				Notificator.alerta(Player, "Lendo dados no banco!");
+				InterfaceManager.alerta(Player, "Lendo dados no banco!");
 				try
 				{
 					Main.Instance.readData();
 				}
 				catch (Exception ex)
 				{
-					Notificator.erro(Player);
+					InterfaceManager.erro(Player);
 					Logger.Log(ex);
 					return;
 				}
-				Notificator.sucesso(Player);
+				InterfaceManager.sucesso(Player);
 			}
 		}
 	}

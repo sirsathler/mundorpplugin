@@ -23,19 +23,19 @@ namespace MundoRP
 		[XmlElement(ElementName = "z")]
 		public float z;
 
-		[XmlElement(ElementName = "ang")]
-		public Vector3 ang;
+		[XmlElement(ElementName = "angle")]
+		public Vector3 angle;
 
 		[XmlElement(ElementName = "nome")]
-		public string nome;
+		public string name;
 
-		public Garage(string Nome, float X, float Y, float Z, Vector3 Ang) //Garage PESSOAL
+		public Garage(string Name, float X, float Y, float Z, Vector3 Angle)
 		{
-			nome = Nome;
+			name = Name;
 			x = X;
 			y = Y;
 			z = Z;
-			ang = Ang;
+			angle = Angle;
 		}
 		private Garage() { }
 	}

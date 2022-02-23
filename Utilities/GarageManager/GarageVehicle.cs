@@ -16,7 +16,6 @@ namespace MundoRP
 		public ushort vehicleId;
 		public string vehicleColor;
 		public int tableId;
-		public List<VehicleBarricade> barList;
 		public List<VehicleDebt> vehicleDebts;
 
 		public GarageVehicle(int TableId, string Owner, ushort vId, string vColor, DateTime SpawnDate, ushort bat, ushort hp, ushort gas, string vename, List<VehicleDebt> vDebts)
