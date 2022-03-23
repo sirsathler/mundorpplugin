@@ -21,7 +21,6 @@ namespace MundoRP
 			{
 				Main.Instance.ModalOpenedPlayers.Remove(uplayer);
 				uiClose(uplayer, mb.id);
-				InterfaceManager.alerta(uplayer, "Você saiu da zona do modal!");
 				return;
 			}
 			catch (Exception ex)

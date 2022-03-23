@@ -1,7 +1,15 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\obj",
+    "\\packages",
+    "\\QACommands",
+    "\\Utilities",
+    "\\Utilities\\GarageManager",
+    "\\Utilities\\InterfaceManager",
+    "\\Utilities\\PlayerManager",
+    "\\Utilities\\VehicleManager"
   ],
-  "SelectedNode": "\\MundoRP.sln",
+  "SelectedNode": "\\Main.cs",
   "PreviewInSolutionExplorer": false
 }
