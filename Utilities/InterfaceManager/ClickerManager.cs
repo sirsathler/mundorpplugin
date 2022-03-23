@@ -17,24 +17,17 @@ namespace MundoRP
 
 
 
-            if (buttonName == "CloseButton")
+            if (buttonName == "Button_Close")
             {
                 ModalManager.uiClose(uplayer, Convert.ToUInt16(config.EffectID_Garage));
                 ModalManager.uiClose(uplayer, Convert.ToUInt16(config.EffectID_Park));
                 ModalManager.uiClose(uplayer, Convert.ToUInt16(config.EffectID_NewWorkModal));
                 return;
             }
-
-
-
-
-
-            if (buttonName == "ActionModal")
+            if (buttonName == "Button_AcceptJob")
             {
-                JobManager.startPlayerJob(mplayer);
+                JobManager.changePlayerJob(mplayer);
             }
-
-
 
 
             if (buttonName.Substring(0, 4) == "Car#")

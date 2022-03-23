@@ -63,13 +63,19 @@ namespace MundoRP
         private void OnPlayerConnected(UnturnedPlayer Player)
 		{
             MundoPlayer newplayer = DataManager.getPlayerBySteamId(Player.CSteamID);
-            Instance.PlayerList.Add(newplayer);
 
+            if (newplayer == null)
+            {
+                Provider.kick(newplayer.steamid, "Sessão Inválida! Contate o administrador do servidor em nosso Discord!");
+                return;
+            }
+            
+            Instance.PlayerList.Add(newplayer);
             InterfaceManager.updateHUD(newplayer);
             Rocket.Core.Logging.Logger.Log("Players online atualmente: " + Instance.PlayerList.Count.ToString());
             foreach(MundoPlayer player in Main.Instance.PlayerList)
 			{
-                Rocket.Core.Logging.Logger.Log("Usuário: "+player.username);
+                Rocket.Core.Logging.Logger.Log("Usuário: "+player.steamid);
 			}   
 		}
 
@@ -79,7 +85,7 @@ namespace MundoRP
             MundoPlayer mplayer = MundoPlayer.getPlayerInList(Player.CSteamID.ToString());
 
             Instance.ModalOpenedPlayers.Remove(Player);
-            JobManager.removePlayerJob(mplayer);
+            JobManager.removePlayerJob(mplayer.steamid.ToString());
             int playerId = MundoPlayer.getPlayerIdInList(Player.CSteamID.ToString());
             if(playerId != -1)
 			{

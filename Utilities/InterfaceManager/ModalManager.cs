@@ -7,13 +7,14 @@ namespace MundoRP
 {
 	public class ModalManager
 	{
-		public static void createModal(UnturnedPlayer uplayer, Vector3 modalPosition, short id)
+		public static void createModal(UnturnedPlayer uplayer, short id)
 		{
-			ModalBeacon modalb = new ModalBeacon(modalPosition, Main.Instance.Configuration.Instance.Interaction_Range, Convert.ToUInt16(id));
+			ModalBeacon modalb = new ModalBeacon(uplayer.Position, Main.Instance.Configuration.Instance.Interaction_Range, Convert.ToUInt16(id));
 			Main.Instance.ModalOpenedPlayers.Add(uplayer, modalb);
 		}
 
-		public static void removePlayerFromModal(UnturnedPlayer uplayer)
+        [Obsolete]
+        public static void removePlayerFromModal(UnturnedPlayer uplayer)
 		{
 			ModalBeacon mb = Main.Instance.ModalOpenedPlayers[uplayer];
 			try
@@ -43,8 +44,7 @@ namespace MundoRP
 				Vector3 grPosition = npc.position;
 				if (!uplayer.IsInVehicle && Vector3.Distance(grPosition, uplayer.Position) < Main.Instance.Configuration.Instance.Interaction_Range)
 				{
-					ModalManager.createModal(uplayer, grPosition, Main.Instance.Configuration.Instance.EffectID_NewWorkModal);
-					InterfaceManager.WorkHUD(MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString()), JobManager.getJobByName(npc.jobname));
+					InterfaceManager.NewWorkHUD(MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString()), JobManager.getJobByName(npc.jobname));
 					return;
 				}
 			}
@@ -53,7 +53,7 @@ namespace MundoRP
 
 		public static void GarageModal(UnturnedPlayer uplayer)
 		{
-			MundoPlayer mplayer = MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString());
+			//MundoPlayer mplayer = MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString());
 
 			foreach (Garage gr in Main.Instance.MundoVehicle_Garages)
 			{
@@ -67,7 +67,6 @@ namespace MundoRP
 						{
 							try
 							{
-								ModalManager.createModal(uplayer, grPosition, Main.Instance.Configuration.Instance.EffectID_Garage);
 								InterfaceManager.parkHUD(uplayer);
 								return;
 							}
@@ -82,7 +81,6 @@ namespace MundoRP
 					try
 					{
 						MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString()).vehicleList = DataManager.getVehiclesBySteamId(uplayer.CSteamID);
-						ModalManager.createModal(uplayer, grPosition, Main.Instance.Configuration.Instance.EffectID_Park);
 						InterfaceManager.GarageHUD(MundoPlayer.getPlayerInList(uplayer.CSteamID.ToString()), uplayer);
 						return;
 					}

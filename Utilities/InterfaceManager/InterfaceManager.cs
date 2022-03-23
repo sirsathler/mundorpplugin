@@ -8,27 +8,20 @@ namespace MundoRP
 	public class InterfaceManager
 	{
         public static Configuration config = Main.Instance.Configuration.Instance;
-        public static void WorkHUD(MundoPlayer mplayer, Job job)
+        public static void NewWorkHUD(MundoPlayer mplayer, Job job)
 		{
             UnturnedPlayer uplayer = UnturnedPlayer.FromCSteamID(mplayer.steamid);
             ushort effectId = Convert.ToUInt16(Main.Instance.Configuration.Instance.EffectID_NewWorkModal);
 
             EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_NewWorkModal), config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true);
-            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Work_Difficulty", job.difficulty);
-            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Work_Salary", job.salary.ToString());
-            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Work_MinLvl", job.minLvl.ToString());
-            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Work_Arg0", job.arg0);
-            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Work_Arg1", job.arg1);
-            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Work_Arg2", job.arg2);
-            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Work_Arg3", job.arg3);
+            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Message_JobName", job.name);
+            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Message_JobDifficulty", job.difficulty);
+            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Message_JobSalary", job.salary.ToString());
+            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Message_LvlMin", job.minLvl.ToString());
+            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "Message_JobDescription", job.description.ToString());
             uplayer.Player.serversideSetPluginModal(true);
+            ModalManager.createModal(uplayer, config.EffectID_Hint);
 
-            if(mplayer.jobName == job.name)
-			{
-                EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "ActionLabel", "Trabalhar!");
-                return;
-			}
-            EffectManager.sendUIEffectText(config.EffectID_NewWorkModal, uplayer.SteamPlayer().transportConnection, true, "ActionLabel", "Aceitar Emprego!");
             return;
         }
 
@@ -76,6 +69,7 @@ namespace MundoRP
             }
             EffectManager.sendUIEffectText(config.EffectID_Garage, uplayer.SteamPlayer().transportConnection, true, "GarageCars#Input", mplayer.vehicleList.Count.ToString());
             EffectManager.sendUIEffectText(config.EffectID_Garage, uplayer.SteamPlayer().transportConnection, true, "GarageDebt#Input", totalDebts.ToString());
+            ModalManager.createModal(uplayer, config.EffectID_Hint);
             uplayer.Player.serversideSetPluginModal(true);
 		}
 
@@ -83,6 +77,7 @@ namespace MundoRP
 		{
             ModalManager.uiClose(uplayer, Convert.ToUInt16(config.EffectID_Park));
             EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Park), config.EffectID_Park, uplayer.SteamPlayer().transportConnection, false);
+            ModalManager.createModal(uplayer, config.EffectID_Hint);
             uplayer.Player.serversideSetPluginModal(true);
         }
 
@@ -99,44 +94,51 @@ namespace MundoRP
         //SUCESSO!
         public static void sucesso(UnturnedPlayer player)
         {
-            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Sucess), config.EffectID_Sucess, player.SteamPlayer().transportConnection, false, "sucesso!".ToUpper());
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Notification), config.EffectID_Notification, player.SteamPlayer().transportConnection, false, "sucesso!".ToUpper());
         }
         public static void sucesso(UnturnedPlayer player, string param)
         {
-            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Sucess), config.EffectID_Sucess, player.SteamPlayer().transportConnection, false, param.ToUpper());
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Notification), config.EffectID_Notification, player.SteamPlayer().transportConnection, false, param.ToUpper());
+            Rocket.Core.Logging.Logger.Log(param);
         }
 
         //ERRO!
         public static void erro(UnturnedPlayer player)
         {
-            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Sucess), config.EffectID_Sucess, player.SteamPlayer().transportConnection, false, "erro!".ToUpper());
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Notification), config.EffectID_Notification, player.SteamPlayer().transportConnection, false, "erro!".ToUpper());
+            Rocket.Core.Logging.Logger.Log("Erro!");
+
         }
         public static void erro(UnturnedPlayer player, string param)
         {
-            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Error), config.EffectID_Error, player.SteamPlayer().transportConnection, false, param.ToUpper());
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Notification), config.EffectID_Notification, player.SteamPlayer().transportConnection, false, param.ToUpper());
+            Rocket.Core.Logging.Logger.Log(param);
+
         }
 
         public static void erroSintaxe(UnturnedPlayer player)
         {
-            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Error), config.EffectID_Error, player.SteamPlayer().transportConnection, false, "Erro de Sintaxe!");
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Notification), config.EffectID_Notification, player.SteamPlayer().transportConnection, false, "Erro de Sintaxe!");
+            Rocket.Core.Logging.Logger.Log("Erro!");
         }
 
         //ALERTA!
         public static void alerta(UnturnedPlayer player, string param)
         {
-            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Alert), config.EffectID_Alert, player.SteamPlayer().transportConnection, false, param.ToUpper());
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Notification), config.EffectID_Notification, player.SteamPlayer().transportConnection, false, param.ToUpper());
+            Rocket.Core.Logging.Logger.Log(param);
         }
 
         //EXP!
         public static void exp(UnturnedPlayer player, int amount)
         {
-            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Exp), config.EffectID_Exp, player.SteamPlayer().transportConnection, false, "você recebeu "+amount+" ponto de EXP!".ToUpper());
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Notification), config.EffectID_Notification, player.SteamPlayer().transportConnection, false, "você recebeu "+amount+" ponto de EXP!".ToUpper());
         }
 
         //LEVEL!
         public static void lvl(UnturnedPlayer player)
         {
-            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Level), config.EffectID_Level, player.SteamPlayer().transportConnection, false, "você passou de nível!".ToUpper());
+            EffectManager.sendUIEffect(Convert.ToUInt16(config.EffectID_Notification), config.EffectID_Notification, player.SteamPlayer().transportConnection, false, "você passou de nível!".ToUpper());
         }        
         
         public static void hintJob(UnturnedPlayer player, string text, string command)

@@ -35,7 +35,7 @@
     <Compile Include="AdminCommands.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DataService.cs" />
-    <Compile Include="Utilities\Environments.cs" />
+    <Compile Include="Environments.cs" />
     <Compile Include="FixedUpdates.cs" />
     <Compile Include="Jobs\Recicladores\Recicladores.cs" />
     <Compile Include="Main.cs" />

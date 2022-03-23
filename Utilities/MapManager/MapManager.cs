@@ -53,6 +53,26 @@ namespace MundoRP
 				InterfaceManager.erroSintaxe(uplayer);
 				return;
 			}
+			if (command[0] == "deletarlixeira" || command[0] == "dlixeira")
+			{
+				if (command.Length == 1)
+				{
+					foreach (Garbage gb in Main.Instance.ObjList_Garbages)
+					{
+						Vector3 gbPosition = new Vector3(gb.x, gb.y, gb.z);
+						if (Vector3.Distance(gbPosition, uplayer.Position) < Main.Instance.Configuration.Instance.Interaction_Range)
+						{
+							Main.Instance.ObjList_Garbages.Remove(gb);
+							InterfaceManager.sucesso(uplayer, "Lixeira deletada com sucesso!");
+							return;
+						}
+					}
+					InterfaceManager.erro(uplayer, "Você não está próximo de uma lixeira!");
+					return;
+				}
+				InterfaceManager.erroSintaxe(uplayer);
+				return;
+			}
 
 			if (command[0] == "criargaragem" || command[0] == "cgaragem")
 			{
@@ -69,7 +89,6 @@ namespace MundoRP
 					{
 						InterfaceManager.erro(uplayer);
 						Rocket.Core.Logging.Logger.Log(ex.ToString());
-						InterfaceManager.erro(uplayer);
 					}
 					return;
 				}
@@ -86,6 +105,7 @@ namespace MundoRP
 						if (npc.name == command[1])
 						{
 							Main.Instance.NPCList_WorkNPCs.Remove(npc);
+
 							return;
 						}
 					}

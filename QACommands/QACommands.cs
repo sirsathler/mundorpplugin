@@ -40,7 +40,8 @@ namespace MundoRP
 		void IRocketCommand.Execute(IRocketPlayer caller, string[] command)
 		{
 			UnturnedPlayer uplayer = (UnturnedPlayer)caller;
-			EffectManager.sendEffect(6911, uplayer.SteamPlayer().transportConnection, uplayer.Position);
+			Rocket.Core.Logging.Logger.Log("QA!");
+			EffectManager.sendEffect(14021, uplayer.SteamPlayer().transportConnection, uplayer.Position);
 		}
 	}
 }

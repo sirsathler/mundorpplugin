@@ -10,7 +10,6 @@ namespace MundoRP
 	public class MundoPlayer
 	{
 		public int level, xp;
-		public string username;
 		public string jobName;
 		public CSteamID steamid;
 		public bool premium;
@@ -18,9 +17,8 @@ namespace MundoRP
 		public int actualCar;
 		public List<GarageVehicle> vehicleList;
 
-		public MundoPlayer(string Username, CSteamID SteamId, int Level, int Xp, string Job, bool Premium, float Mp, float Rp, List<GarageVehicle> vlist)
+		public MundoPlayer(CSteamID SteamId, int Level, int Xp, string Job, bool Premium, float Mp, float Rp, List<GarageVehicle> vlist)
 		{
-			username = Username;
 			steamid = SteamId;
 			level = Level;
 			xp = Xp;
@@ -34,8 +32,7 @@ namespace MundoRP
 
 		public static MundoPlayer getPlayerInList(string csteamid)
 		{
-			int i = 0;
-			for (i = 0; i <= Main.Instance.PlayerList.Count; i++)
+			for (int i = 0; i <= Main.Instance.PlayerList.Count; i++)
 			{
 				if (Main.Instance.PlayerList[i].steamid.ToString() == csteamid)
 				{

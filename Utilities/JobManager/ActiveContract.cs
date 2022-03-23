@@ -17,7 +17,7 @@ namespace MundoRP
             this.JobContract = jobContract;
         }
 
-        public static int getActiveContract(MundoPlayer mplayer)
+        public static int getActiveContract(string steamid)
         {
             if(Main.Instance.JobList_ActiveContracts.Count == 0)
             {
@@ -25,7 +25,7 @@ namespace MundoRP
             }
             for(int i = 0; i <= Main.Instance.JobList_ActiveContracts.Count; i++)
             {
-                if (Main.Instance.JobList_ActiveContracts[i].WorkerSteamid == mplayer.steamid.ToString())
+                if (Main.Instance.JobList_ActiveContracts[i].WorkerSteamid == steamid)
                 {
                     return i;
                 }

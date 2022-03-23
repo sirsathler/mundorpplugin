@@ -69,20 +69,18 @@ namespace MundoRP
             {
                 MySqlConnection sqlConn = new MySqlConnection(connectionString);
                 sqlConn.Open();
-                MySqlCommand sqlCmd = new MySqlCommand("SELECT Player_Username, Player_SteamId, Player_Level, Player_Xp, Player_Job, Player_Premium, Player_MP, Player_RP FROM " + Environments.database + ".server_players WHERE Player_SteamId=" + id.ToString(), sqlConn);
+                MySqlCommand sqlCmd = new MySqlCommand("SELECT Player_Level, Player_Xp, Player_Job, Player_Premium, Player_MP, Player_RP FROM " + Environments.database + ".server_players WHERE Player_SteamId=" + id.ToString(), sqlConn);
                 sqlCmd.CommandType = System.Data.CommandType.Text;
                 MySqlDataReader dr = sqlCmd.ExecuteReader();
                 dr.Read();
 
-                bool premium = false;
-                premium = Convert.ToDateTime(dr.GetString(5)) > DateTime.Now ? true : false;
+                bool premium;
+                premium = Convert.ToDateTime(dr.GetString(3)) > DateTime.Now ? true : false;
                 List<GarageVehicle> garageVehicles = getVehiclesBySteamId(id);
-                MundoPlayer player = new MundoPlayer(dr.GetString(0), id, Convert.ToInt32(dr.GetString(2)), Convert.ToInt32(dr.GetString(3)), dr.GetString(4), premium, (float)Convert.ToDouble(dr.GetString(7)), (float)Convert.ToDouble(dr.GetString(6)), garageVehicles);
-
-                player.jobName = player.jobName == null ? "desempregado" : dr.GetString(4);
-
+                MundoPlayer player = new MundoPlayer(id, Convert.ToInt32(dr.GetString(0)), Convert.ToInt32(dr.GetString(1)), dr.GetString(2), premium, (float)Convert.ToDouble(dr.GetString(4)), (float)Convert.ToDouble(dr.GetString(5)), garageVehicles);
                 sqlConn.Close();
-                
+
+                Rocket.Core.Logging.Logger.Log("Succesfully created MundoPlayer with steamid of: " + player.steamid.ToString());
                 return player;
 
             }
@@ -103,11 +101,11 @@ namespace MundoRP
 
                 MySqlCommand sqlCmd = new MySqlCommand("SELECT Vehicles_uId, Vehicle_Battery, Vehicle_Health, Vehicle_Fuel, Vehicles_Name, Vehicles_Color, Vehicle_Id " +
                     "FROM " + Environments.database + ".server_players " +
-                    "INNER JOIN mundorp.game_vehicles " +
-                    "INNER JOIN mundorp.game_vehicles_data " +
-                    "ON mundorp.game_vehicles.Vehicle_uId = " + Environments.database + ".game_vehicles_data.Vehicles_uId " +
-                    "WHERE mundorp.game_vehicles.Vehicle_OwnerId =" + id.ToString() +
-                    " AND mundorp.server_players.Player_SteamId =" + id.ToString(), sqlConn);
+                    "INNER JOIN "+Environments.database+".server_vehicles " +
+                    "INNER JOIN " + Environments.database + ".game_vehicles_data " +
+                    "ON " + Environments.database + ".server_vehicles.Vehicle_uId = " + Environments.database + ".game_vehicles_data.Vehicles_uId " +
+                    "WHERE " + Environments.database + ".server_vehicles.Vehicle_OwnerId =" + id.ToString() +
+                    " AND " + Environments.database + ".server_players.Player_SteamId =" + id.ToString(), sqlConn);
 
                 sqlCmd.CommandType = System.Data.CommandType.Text;
                 MySqlDataReader dr = sqlCmd.ExecuteReader();
@@ -149,7 +147,7 @@ namespace MundoRP
 		{
             MySqlConnection sqlConne = new MySqlConnection(connectionString);
             sqlConne.Open();
-            MySqlCommand sqlCmd = new MySqlCommand("SELECT * FROM mundorp.game_vehicles_debt WHERE Debt_VehicleId = "+vehicleTableId, sqlConne);
+            MySqlCommand sqlCmd = new MySqlCommand("SELECT * FROM "+Environments.database+".game_vehicles_debt WHERE Debt_VehicleId = "+vehicleTableId, sqlConne);
             sqlCmd.CommandType = System.Data.CommandType.Text;
             MySqlDataReader dr = sqlCmd.ExecuteReader();
 
@@ -186,7 +184,7 @@ namespace MundoRP
                 {
                     while (dr.Read())
                     {
-                        newJobList.Add(new Job(dr.GetString("Job_Name"), (float)Convert.ToUInt32(dr.GetString("Job_Salary")), Convert.ToInt32(dr.GetString("Job_MinLvl")), dr.GetString("Job_Difficulty"), dr.GetString("Job_Arg0"), dr.GetString("Job_Arg1"), dr.GetString("Job_Arg2"), dr.GetString("Job_Arg3")));
+                        newJobList.Add(new Job(dr.GetString("Job_Name"), (float)Convert.ToUInt32(dr.GetString("Job_Salary")), dr.GetString("Job_Description"), Convert.ToInt32(dr.GetString("Job_MinLvl")), dr.GetString("Job_Difficulty"), dr.GetString("Job_Arg0"), dr.GetString("Job_Arg1"), dr.GetString("Job_Arg2"), dr.GetString("Job_Arg3")));
                     }
                     dr.NextResult();
                     i++;
@@ -311,7 +309,7 @@ namespace MundoRP
 
         public static bool updateCar(InteractableVehicle vh, int id)
 		{
-            runSQLCommand("UPDATE " + Environments.database + ".game_vehicles SET Vehicle_Battery =" + vh.batteryCharge + ", Vehicle_Health =" + vh.health + ", Vehicle_Fuel =" + vh.fuel + " WHERE Vehicle_Id =" + id);
+            runSQLCommand("UPDATE " + Environments.database + ".server_vehicles SET Vehicle_Battery =" + vh.batteryCharge + ", Vehicle_Health =" + vh.health + ", Vehicle_Fuel =" + vh.fuel + " WHERE Vehicle_Id =" + id);
             return false;
         }
 

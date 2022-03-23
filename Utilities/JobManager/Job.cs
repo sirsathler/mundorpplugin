@@ -12,18 +12,20 @@ namespace MundoRP
 		public float salary;
 		public int minLvl;
 		public string difficulty;
+		public string description;
 
 		public string arg0;
 		public string arg1;
 		public string arg2;
 		public string arg3;
 
-		public Job(string name, float salary, int minLvl, string difficulty, string arg0, string arg1, string arg2, string arg3)
+		public Job(string name, float salary, string description, int minLvl, string difficulty, string arg0, string arg1, string arg2, string arg3)
 		{
 			this.name = name;
 			this.salary = salary;
 			this.minLvl = minLvl;
 			this.difficulty = difficulty;
+			this.description = description;
 			this.arg0 = arg0;
 			this.arg1 = arg1;
 			this.arg2 = arg2;
